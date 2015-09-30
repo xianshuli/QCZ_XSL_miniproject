@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <link rel="icon" href="/favicon.ico">
+    <title>Connex</title>
+    <!-- Custom styles for this template -->
+    <link type="text/css" href="css/starter-template.css" rel="stylesheet">
+    <!-- Bootstrap core CSS -->
+    <link type="text/css" href="css/bootstrap.min.css" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        jQuery(document).ready( function($) {
+            document.getElementById("success-alert").style.visibility = "hidden";
+            document.getElementById("unsubstatus").style.visibility = "hidden";
+
+            $("#deletechecked").click( function(e){
+                e.preventDefault();
+
+                // record the checked row
+                var checkedRow = new Array();
+                $("#myOwnStreams tr").each( function(index){
+                    if($(this).find("input:checkbox").is(":checked")){
+                        //alert($(this).find(".myStreamClicked").html())
+                        checkedRow.push($(this).find(".myStreamClicked").html())
+                    }
+                });
+                //alert(checkedRow.length)
+
+                // send to delete handler
+                var deleteStreamIOwn = {
+                    namelist : checkedRow
+                }
+
+                   $.ajax({
+                       url: '/deleteStreamIOwn',
+                       type: 'post',
+                       contentType: "text/plain",
+                       data: JSON.stringify(deleteStreamIOwn)
+                   });
+
+                // refresh the page when delete is done
+                $( document ).ajaxComplete(function(event, xhr, settings) {
+
+                    var deleteStatus = JSON.parse(xhr.responseText)
+                    var status = deleteStatus["deleteStatus"]
+                    if(status){
+                        if(document.getElementById("success-alert").style.visibility == "hidden"){
+                            document.getElementById("success-alert").style.visibility = "visible";
+                            $('#success-alert').delay(4000).fadeOut()
+                            setTimeout(function(){
+                                 window.location.replace("/management.html")
+                            }, 4000);
+                        }
+                    }else{
+                        window.location.replace("/management.html")
+                    }
+                    });
+
+
+            });
+
+            $("#unsubscribechecked").click( function(e){
+                e.preventDefault();
+
+                // record the checked row
+                var checkedRow = new Array();
+                $("#mySubStreams tr").each( function(index){
+                    if($(this).find("input:checkbox").is(":checked")){
+                        //checkedRow.push(index)
+                        //alert($(this).find(".SubStreamClicked").html())
+                        checkedRow.push($(this).find(".SubStreamClicked").html())
+                    }
+                });
+                //alert(checkedRow.length)
+
+                // send to delete handler
+                var deleteStreamISub = {
+                    indexlist : checkedRow
+                }
+
+                 $.ajax({
+                       url: '/deleteStreamISub',
+                       type: 'post',
+                       contentType: "text/plain",
+                       data: JSON.stringify(deleteStreamISub)
+                   });
+
+                // refresh the page when delete is done
+                $( document ).ajaxComplete(function(event, xhr, settings) {
+                    var deleteStatus = JSON.parse(xhr.responseText)
+                    var status = deleteStatus["unSubStatus"]
+                    if(status){
+                        if(document.getElementById("unsubstatus").style.visibility == "hidden"){
+                            document.getElementById("unsubstatus").style.visibility = "visible";
+                            $('#unsubstatus').delay(4000).fadeOut()
+                            setTimeout(function(){
+                                 window.location.replace("/management.html")
+                            }, 4000);
+                        }
+                    }else{
+                        window.location.replace("/management.html")
+                    }
+                    });
+            });
+        });
+    </script>
+
+  </head>
+  <body>
+    {% include 'myhtml/myheader.html' %}
+
+    <div class="panel panel-default">
+    <!-- Default panel contents -->
+      <div class="panel-heading">Streams I own</div>
+      <!-- Table -->
+      <table class="table" id="myOwnStreams">
+         <tr>
+          <td>Name</td>
+          <td>Last New Picture</td>
+          <td>Number of Pictures</td>
+          <td>Number of Views</td>
+          <td>Delete</td>
+        </tr>
+        {% if streamIOwnLength > 0 %}
+          <div class="bg-success">
+            {% for key in streamIOwn %}
+                    <tr class="info">
+                        <td><a class="myStreamClicked"  href="/viewStream?Stream_id={{key.get().streamname}}">{{key.get().streamname}}</a></td>
+                        <td>{{key.get().lastNewPicture}}</td>
+                        <td>{{key.get().numOfPictures}}</td>
+                        <td>{{key.get().numOfViews}}</td>
+                        <td>
+                        <div class="checkbox">
+                            <input type="checkbox" value="">
+                        </div></td>
+                    </tr>
+            {% endfor%}
+          </div>
+        {% endif %}
+      </table>
+        {% if streamIOwnLength == 0 %}
+        <div class="alert alert-info" role="alert" align="center">
+            <p>You don't have any Streams yet, go to Create tab to get some</p>
+        </div>
+        {% endif %}
+    </div>
+    <button class="btn btn-primary" type="button" id="deletechecked">
+        Delete Checked
+    </button>
+    <div class="alert alert-danger" id="success-alert">
+        <strong>Something WRONG!! </strong>
+        You tried to delete a stream no longer exists, but we handled that for you! NO worry....
+    </div>
+
+
+
+    <div class="panel panel-default" style="margin-top: 2%">
+    <!-- Default panel contents -->
+      <div class="panel-heading">Streams I subscribe to</div>
+      <!-- Table -->
+      <table class="table" id="mySubStreams">
+       <tr>
+          <td>Name</td>
+          <td>Last New Picture</td>
+          <td>Number of Pictures</td>
+          <td>Views</td>
+          <td>Unsubscribe</td>
+        </tr>
+        {% if streamISubLength > 0 %}
+           <div class="bg-success">
+          {% for stream in streamISub %}
+                <tr class="info">
+                        <td><a class="SubStreamClicked" id="{{stream}}" href="/viewStream?Stream_id={{stream.get().streamname}}">{{stream.get().streamname}}</a></td>
+                        <td>{{stream.get().lastNewPicture}}</td>
+                        <td>{{stream.get().numOfPictures}}</td>
+                        <td>{{stream.get().numOfViews}}</td>
+                        <td>
+                        <div class="checkbox">
+                            <input type="checkbox" value="">
+                        </div></td>
+                    </tr>
+          {% endfor %}
+           </div>
+          {% else %}
+          <div class="alert alert-info" role="alert" align="center">
+                <p>You haven't subscribe any Streams yet, go to View tab to get some</p>
+            </div>
+          {% endif %}
+      </table>
+    </div>
+
+     <button class="btn btn-danger" type="button" id="unsubscribechecked">
+        Unsubscribe checked Streams
+    </button>
+    <div class="alert alert-danger" id="unsubstatus">
+        <strong>Something WRONG!! </strong>
+        You tried to unsubscribe a stream you have unsubscribed or deleted by its owner, but we handled that for you! NO worry....
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html>

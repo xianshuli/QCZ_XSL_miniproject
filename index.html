@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+{% autoescape true %}
+<html>
+<head>
+</head>
+   <h1>Welcome to Connex</h1>
+   <h3>Share the world!</h3>
+   {% if usr%}
+        <a href="{{ url2man }}?usr={{usr}}">Go</a>
+        <a href="{{ url }}">{{ url_linktext }}</a>
+   {% else%}
+        <a href="{{ url }}">{{ url_linktext }}</a>
+   {% endif%}
+  </body>
+</html>
+{% endautoescape %}

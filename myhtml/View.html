@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link type="text/css" href="/css/starter-template.css" rel="stylesheet">
+    <!-- Bootstrap core CSS -->
+    <link type="text/css" href="/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+{% extends 'myhtml/myheader.html' %}
+{% block navBar %}
+<li><a href="/management.html">Manage</a></li>
+<li><a href="/myhtml/Create.html">Create</a></li>
+<li class="active"><a href="/myhtml/View.html">View</a></li>
+<li><a href="/myhtml/SearchHome.html">Search</a></li>
+<li><a href="/myhtml/Trending.html">Trending</a></li>
+<li><a href="/myhtml/Social.html">Social</a></li>
+{% endblock %}
+
+{% block myBody %}
+
+<div class="page-header">
+    <h1>View All Streams <small>Only streams with pictures are shown</small></h1>
+</div>
+
+<div class="row row-offcanvas row-offcanvas-right">
+    <div class="col-sm-12">
+
+        <div class="row">
+            {% for streams in streams_to_show%}
+            <div class="col-sm-6 col-md-4">
+                <div class="thumbnail">
+                    <a href="{{ streams.urlToStream }}">
+                        <img src="{{ streams.coverPhotoURL}}" class="img-responsive" data-holder-rendered="true"
+                             style="height: 200px; width: 100%; display: block;">
+                    </a>
+
+                    <div class="caption">
+                        <a href="{{ streams.urlToStream }}">
+                            <h3>{{streams.streamName}}</h3>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!--/.col-sm-6.col-md-4-->
+            {% endfor %}
+        </div>
+        <!--/row-->
+    </div>
+    <!--/.col-xs-12.col-sm-9-->
+</div>
+
+</body>
+{% endblock %}
+</html>

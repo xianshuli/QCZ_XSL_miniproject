@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Connex</title>
+    <link type="text/css" href="/css/starter-template.css" rel="stylesheet">
+    <!-- Bootstrap core CSS -->
+    <link type="text/css" href="/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(function ($) {
+
+            setRadioButton()
+
+            $('#EmailratingForm').submit(function (e) {
+                e.preventDefault();
+                //alert($('input[name=inlineRadioOptions]:checked', '#EmailratingForm').val());
+
+                var rateSetting = {
+                    rateoption: $('input[name=inlineRadioOptions]:checked', '#EmailratingForm').val()
+                }
+
+                $.ajax({
+                    url: '/changeEmailRate',
+                    type: 'post',
+                    contentType: "text/plain",
+                    data: JSON.stringify(rateSetting)
+                });
+            })
+
+            function setRadioButton() {
+                $.ajax({
+                    url: '/givemeEmailRate',
+                    type: 'get',
+                    contentType: 'text/plain'
+                });
+
+                $(document).ajaxComplete(function (event, xhr, settings) {
+                    var rateSetting = JSON.parse(xhr.responseText)
+                    var rate = rateSetting["currentSetting"]
+                    $("#inlineRadio" + rate).attr('checked', true)
+                });
+            }
+        });
+    </script>
+</head>
+<body>
+{% extends 'myhtml/myheader.html' %}
+{% block navBar %}
+<li><a href="/management.html">Manage</a></li>
+<li><a href="/myhtml/Create.html">Create</a></li>
+<li><a href="/myhtml/View.html">View</a></li>
+<li><a href="/myhtml/SearchHome.html">Search</a></li>
+<li class="active"><a href="/myhtml/Trending.html">Trending</a></li>
+<li><a href="/myhtml/Social.html">Social</a></li>
+{% endblock %}
+
+{% block myBody%}
+<div class="page-header">
+    <h1>Top 3 Trending Streams</h1>
+</div>
+
+<form id="EmailratingForm">
+    <label class="radio-inline">
+        <input type="radio" name="inlineRadioOptions" id="inlineRadio0" value="option1">No reports
+    </label>
+    <label class="radio-inline">
+        <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option2">Every 5 minutes
+    </label>
+    <label class="radio-inline">
+        <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option3">Every 1 hour
+    </label>
+    <label class="radio-inline">
+        <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option4">Every day
+    </label>
+    <input class="btn btn-default" type="submit" value="Update Rate">
+</form>
+<div class="row row-offcanvas row-offcanvas-right">
+    <div class="col-sm-12">
+        <div class="row">
+            {% for streams in streams_to_show%}
+            <div class="col-sm-6 col-md-4">
+                <div class="thumbnail">
+                    <a href="{{ streams.urlToStream }}">
+                        <img src="{{ streams.coverPhotoURL}}" class="img-responsive" data-holder-rendered="true"
+                             style="height: 200px; width: 100%; display: block;">
+                    </a>
+
+                    <div class="caption">
+                        <a href="{{ streams.urlToStream }}">
+                            <h3>{{streams.streamName}}</h3>
+                            <h3>{{streams.numOfViews}} Views in past hour</h3>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!--/.col-sm-6.col-md-4-->
+
+            {% endfor %}
+        </div>
+        <!--/row-->
+    </div>
+    <!--/.col-xs-12.col-sm-9-->
+</div>
+</body>
+{% endblock %}
+</html>
