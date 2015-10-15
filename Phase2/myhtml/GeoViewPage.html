@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Geo View</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <link rel="icon" href="/favicon.ico">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <!-- Custom styles for this template -->
+    <link type="text/css" href="/css/starter-template.css" rel="stylesheet">
+    <!-- Bootstrap core CSS -->
+    <link type="text/css" href="/css/bootstrap.min.css" rel="stylesheet">
+
+    <!--for geo view-->
+    <script src="/js/jquery-1.10.2.js"></script>
+    <script src="/js/jquery-ui.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+    <script type="text/javascript" src="/js/markerclusterer.min.js"></script>
+    <script type="text/javascript" src="/js/jquery.ui.map.js"></script>
+
+    <!--implement_geo_view-->
+    <!--<script type="text/javascript" src="/js/implement_geo_view.js"></script>-->
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+//var image1 = {
+//    'url': "http://game.china.com/gbox/mh3g/act/000/015/948/8bb96cf9-918e-46e2-9599-3cad4e9a47f3.jpg",
+//    'created': new Date("October 30, 2014 17:13:00"),
+//    'lat': 0,
+//    'lng': 90
+//};
+//var image2 = {
+//    'url': "http://www.3dmgame.com/uploads/allimg/130709/180_130709182724_1.jpg",
+//    'created': new Date(),
+//    'lat': 0,
+//    'lng': 92
+//};
+//var images = [image1, image2];
+
+            var stream_key = "{{stream_key}}";
+            console.log(stream_key);
+            var indata = {"Stream_id": stream_key};
+
+            $.ajax({
+                url: '/geoViewRequest',
+                data: indata,
+                dataType: "json",
+                type: "POST",
+                success: function (data) {
+                    var my_map;
+                    var marker_cluster1;
+                    var images = [];
+                    for (var i = 0, len = data.length; i < len; ++i) {
+                        images.push({
+                            "url": data[i].url,
+                            "created": new Date(data[i].created),
+                            "lat": data[i].lat,
+                            "lng": data[i].lng
+                        });
+                        console.log(images[i]);
+                    }
+                    var southWest, northEast, lngSpan, latSpan;
+                    $('#map_canvas').gmap({'zoom': 2, 'disableDefaultUI': true}).bind('init', function (evt, map) {
+                        my_map = map;
+                        var bounds = map.getBounds();
+                        southWest = bounds.getSouthWest();
+                        northEast = bounds.getNorthEast();
+                        lngSpan = northEast.lng() - southWest.lng();
+                        latSpan = northEast.lat() - southWest.lat();
+                        images.forEach(function (image) {
+                            var lat = southWest.lat() + latSpan * Math.random();
+                            var lng = southWest.lng() + lngSpan * Math.random();
+                            $('#map_canvas').gmap('addMarker', {
+                                'position': new google.maps.LatLng(image.lat, image.lng)
+                            }).mouseover(function () {
+                                $('#map_canvas').gmap('openInfoWindow', {content: "<img src=" + image.url + " style='width:100px;height:100px;'>"}, this);
+                            });
+                        });
+                        marker_cluster1 = new MarkerClusterer(map, $('#map_canvas').gmap('get', 'markers'));
+                        $('#map_canvas').gmap('set', 'MarkerClusterer', marker_cluster1);
+
+                        // To call methods in MarkerClusterer simply call
+                        // $('#map_canvas').gmap('get', 'MarkerClusterer').callingSomeMethod();
+                    });
+                    var showMin = (function () {
+                        var currMin = new Date();
+                        images.forEach(function (image) {
+                            if (image.created && image.created < currMin) {
+                                currMin = image.created;
+                            }
+                        })
+                        return currMin;
+                    })();
+
+                    var showMax = new Date();
+                    console.log(typeof (showMax));
+                    //console.log('showmax ' + showMax);
+                    //console.log('showmin ' + showMin);
+                    //console.log('showmax ' + jQuery.type(showMax));
+                    //console.log('showmin ' + jQuery.type(showMin));
+                    //console.log('showmax time ' + showMax.getTime() / 86400000 / 365);
+                    //console.log('showmin time ' + showMin.getTime() / 86400000 / 365);
+                    //var minRange = Math.floor(showMax.getTime() / 86400000 - 366);
+                    $('#slider-range').slider({
+                        range: true,
+                        min: Math.floor(showMax.getTime() / 86400000 - 366),
+                        max: Math.floor(showMax.getTime() / 86400000),
+                        values: [showMin.getTime() / 86400000, showMax.getTime() / 86400000],
+                        slide: function (event, ui) {
+                            var currentMin = new Date(ui.values[0] * 86400000);
+                            var currentMax = new Date(ui.values[1] * 86400000 + 86400000);
+                            $('#date-range').val(currentMin.toDateString() + ' - ' + currentMax.toDateString());
+                            $('#map_canvas').gmap('clear', 'markers');
+                            marker_cluster1.clearMarkers();
+                            images.forEach(function (image) {
+                                //console.log(image);
+//                                console.log("currentMin " + currentMin);
+//                                console.log("currentMax " + currentMax);
+//                                console.log("image_created " + image.created);
+                                if (image.created >= currentMin && image.created <= currentMax) {
+                                    //var lat = southWest.lat() + latSpan * Math.random();
+                                    //var lng = southWest.lng() + lngSpan * Math.random();
+                                    $('#map_canvas').gmap('addMarker', {
+                                        'position': new google.maps.LatLng(image.lat, image.lng)
+                                    }).mouseover(function () {
+                                        $('#map_canvas').gmap('openInfoWindow', {content: "<img src=" + image.url + " style='width:100px;height:100px;'>"}, this);
+                                    });
+                                }
+                            });
+                            marker_cluster1 = new MarkerClusterer(my_map, $('#map_canvas').gmap('get', 'markers'));
+                            $('#map_canvas').gmap('set', 'MarkerClusterer', marker_cluster1);
+                        }
+                    });
+                    $('#date-range').val(showMin.toDateString() + ' - ' + showMax.toDateString());
+                }
+            });
+        });
+</script>
+</head>
+<body>
+{% extends 'myhtml/myheader.html' %}
+{% block navBar %}
+<li><a href="/management.html">Manage</a></li>
+<li><a href="/myhtml/Create.html">Create</a></li>
+<li><a href="/myhtml/View.html">View</a></li>
+<li><a href="/myhtml/SearchHome.html">Search</a></li>
+<li><a href="/myhtml/Trending.html">Trending</a></li>
+<li><a href="/myhtml/Social.html">Social</a></li>
+{% endblock %}
+{% block myBody %}
+<!--<p>{{stream_key}}</p>-->
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div id="map_canvas" style="height:400px;"></div>
+                <br/>
+                <div>
+                    <label for="date-range">Date range:</label>
+                    <input id="date-range" readonly="true" style="width:50%;border:0;">
+                </div>
+                <div id="slider-range"></div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+{% endblock %}
+</html>

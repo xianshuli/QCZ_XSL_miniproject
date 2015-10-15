@@ -1,0 +1,8 @@
+cron:
+- description: trending report
+  url: /pollTheNumOfViews
+  schedule: every 1 minutes
+
+- description: trending email
+  url: /emailTrendingController
+  schedule: every 5 minutes

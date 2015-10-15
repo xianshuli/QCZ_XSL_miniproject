@@ -1,0 +1,142 @@
+application: connexphase2
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: yes
+
+handlers:
+- url: /favicon\.ico
+  static_files: favicon.ico
+  upload: favicon\.ico
+
+- url: /lightbox2-master/dist/js
+  static_dir: lightbox2-master/dist/js
+
+- url: /lightbox2-master/dist/images
+  static_dir: lightbox2-master/dist/images
+
+- url: /lightbox2-master/dist/css
+  static_dir: lightbox2-master/dist/css
+
+- url: /css
+  static_dir: css
+
+- url: /js
+  static_dir: js
+
+- url: /img
+  static_dir: img
+
+- url: /fonts
+  static_dir: fonts
+
+- url: /starter-template.css
+  static_files: starter-template.css
+  upload: starter-template.css
+
+- url: /myhtml/myheader.html
+  static_files: /myhtml/myheader.html
+  upload: /myhtml/myheader.html
+
+- url: /myhtml/Errorpage.html
+  script: Errorpage.app
+
+- url: /myhtml/imageHolder.html
+  static_files: /myhtml/imageHolder.html
+  upload: /myhtml/imageHolder.html
+
+- url: /management.html
+  script: management.app
+  login: required
+
+- url: /myhtml/Create.html
+  script: create.app
+  login: required
+
+- url: /createForm
+  script: createForm.app
+
+- url: /emailinvite
+  script: createForm.app
+
+- url: /CreateStream
+  script: create.app
+  login: required
+
+- url: /deleteStreamIOwn
+  script: management.app
+  login: required
+
+- url: /deleteStreamISub
+  script: management.app
+  login: required
+
+- url: /deleteTheStreamISub
+  script: management.app
+  login: required
+
+- url: /viewStream
+  script: viewSingleStream.app
+  login: required
+
+- url: /myhtml/View.html
+  script: ViewAllStream.app
+  login: required
+
+- url: /myhtml/SearchHome.html
+  script: searchEngine.app
+
+- url: /myhtml/Trending.html
+  script: trending.app
+  login: required
+
+- url: /myhtml/Social.html
+  script: social.app
+
+- url: /searchEngine
+  script: searchEngine.app
+
+- url: /keyStore
+  script: searchEngine.app
+
+- url: /viewSingleAfterUpload
+  script: viewSingleStream.app
+  login: required
+
+- url: /geoViewRequest
+  script: viewSingleStream.app
+
+- url: /getUploadUrl
+  script: viewSingleStream.app
+
+- url: /givemeImages
+  script: viewSingleStream.app
+
+- url: /fetchAnotherSetOfPhotos
+  script: serveNewSetPhotos.app
+
+- url: /subScribeme
+  script: subScribeHandler.app
+
+
+- url: /changeEmailRate
+  script: trendingEmail.app
+
+- url: /emailTrendingController
+  script: trendingEmail.app
+
+- url: /givemeEmailRate
+  script: trendingEmail.app
+
+- url: /pollTheNumOfViews
+  script: trending.app
+
+- url: /
+  script: main.app
+  login: required
+
+libraries:
+- name: webapp2
+  version: "2.5.2"
+- name: jinja2
+  version: latest
