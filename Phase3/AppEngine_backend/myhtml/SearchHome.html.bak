@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link type="text/css" href="/css/starter-template.css" rel="stylesheet">
+    <!-- Bootstrap core CSS -->
+    <link type="text/css" href="/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script type="text/javascript">
+   jQuery(document).ready( function($) {
+       $('#searchForm1').submit(function (e) {
+           e.preventDefault();
+           var searchQuery = {
+            keyword: $("#SearchInput").val()
+            }
+
+           $.ajax({
+               url: '/searchEngine',
+               type: 'post',
+               contentType: "text/plain",
+               data: JSON.stringify(searchQuery),
+
+           });
+       });
+
+       $( document ).ajaxComplete(function(event, xhr,settings) {
+            alert("Search finished");
+            document.write(xhr.responseText)
+        });
+   });
+    </script>
+</head>
+<body>
+    {% extends 'myhtml/myheader.html' %}
+        {% block navBar %}
+            <li><a href="/management.html">Manage</a></li>
+            <li><a href="/myhtml/Create.html">Create</a></li>
+            <li><a href="/myhtml/View.html">View</a></li>
+            <li class="active"><a href="/myhtml/SearchHome.html">Search</a></li>
+            <li><a href="/myhtml/Trending.html">Trending</a></li>
+            <li><a href="/myhtml/Social.html">Social</a></li>
+        {% endblock %}
+    {% block myBody %}
+        <form class="form-inline" id="searchForm" action="/searchEngine" method="post">
+          <div class="form-group">
+            <div class="input-group">
+              <span class="input-group-addon"><img src="/img/empty.jpg" height="20" width="20"/></span>
+              <input type="text" class="form-control" id="SearchInput" placeholder="Search" name="SearchInput"/>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+
+        {% if hasResult %}
+        <div class="row row-offcanvas row-offcanvas-right">
+            <div class="col-xs-12 col-sm-9">
+              <div class="row">
+                {% for streams in streams_to_show%}
+                    <div class="col-xs-6 col-lg-4">
+                        <a href="{{ streams.urlToStream }}">
+                            <img src="{{ streams.coverPhotoURL}}" class="img-responsive">
+                        </a>
+                        <a href="{{ streams.urlToStream }}">
+                            <h4>{{streams.streamName}}</h4>
+                        </a>
+                    </div><!--/.col-xs-6.col-lg-4-->
+                {% endfor %}
+              </div><!--/row-->
+            </div><!--/.col-xs-12.col-sm-9-->
+        </div>
+        {% else %}
+        <br><br><br>
+        <p class="bg-warning">Sorry There is no non-empty Stream match your search</p>
+        {% endif %}
+</body>
+{% endblock %}
+</html>

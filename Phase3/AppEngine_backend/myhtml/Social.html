@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Connex</title>
+     <link type="text/css" href="/css/starter-template.css" rel="stylesheet">
+    <!-- Bootstrap core CSS -->
+    <link type="text/css" href="/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+        {% extends 'myhtml/myheader.html' %}
+        {% block navBar %}
+            <li><a href="/management.html">Manage</a></li>
+            <li><a href="/myhtml/Create.html">Create</a></li>
+            <li><a href="/myhtml/View.html">View</a></li>
+            <li><a href="/myhtml/SearchHome.html">Search</a></li>
+            <li><a href="/myhtml/Trending.html">Trending</a></li>
+            <li class="active"><a href="/myhtml/Social.html">Social</a></li>
+        {% endblock %}
+</body>
+</html>
