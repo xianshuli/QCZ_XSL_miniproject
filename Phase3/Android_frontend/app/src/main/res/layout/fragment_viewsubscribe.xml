@@ -38,7 +38,9 @@
             android:layout_height="wrap_content"
             android:text="View All Streams"
             android:id="@+id/back_from_viewsub"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:textColor="#ffffff"
+            android:background="@drawable/mybuttongreen"/>
     </LinearLayout>
 
 </LinearLayout>

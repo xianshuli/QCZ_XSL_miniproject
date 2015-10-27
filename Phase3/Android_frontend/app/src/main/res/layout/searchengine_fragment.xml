@@ -21,6 +21,7 @@
             android:layout_weight="1"
             android:text="Search"
             android:id="@+id/search_button_onSearch"
+            android:drawableLeft="@android:drawable/ic_menu_search"
             android:enabled="false"/>
     </LinearLayout>
 
@@ -53,6 +54,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Previous"
+            android:background="#FFC107"
             android:id="@+id/prev_button"
             android:layout_weight="1"
             android:visibility="invisible"
@@ -61,6 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="View more"
+            android:background="#3D5AFE"
             android:id="@+id/more_button"
             android:layout_weight="1"
             />
@@ -69,9 +72,10 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:id="@+id/back_from_search"
-        android:text="View All Stream"/>
+        android:text="View All Stream"
+        android:textColor="#ffffff"
+        android:background="@drawable/mybuttongreen"/>
 
 
 </LinearLayout>

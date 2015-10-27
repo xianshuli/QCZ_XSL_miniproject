@@ -31,6 +31,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:numColumns="3"
+            android:verticalSpacing="10dp"
+            android:horizontalSpacing="10dp"
             android:gravity="center">
         </GridView>
     </LinearLayout>
@@ -48,6 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Previous"
+                android:background="#FFC107"
                 android:id="@+id/switch_page_button_less"
                 android:layout_weight="1"
                 android:visibility="invisible"
@@ -56,6 +59,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="View more"
+                android:background="#3D5AFE"
                 android:id="@+id/switch_page_button_more"
                 android:layout_weight="1"
                 />
@@ -67,14 +71,19 @@
             android:layout_height="wrap_content"
             android:id="@+id/upload_button"
             android:text="Upload image"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:textColor="#ffffff"
+            android:background="@drawable/mybuttonyellow"
+            />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/back_to_stream_button"
             android:text="Streams"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:textColor="#ffffff"
+            android:background="@drawable/mybuttongreen"/>
 
     </LinearLayout>
 

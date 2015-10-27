@@ -9,6 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/choose_from_library"
+        android:textColor="#ffffff"
+        android:background="@drawable/mybuttongreen"
         />
 
     <Button
@@ -16,6 +18,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Use Camera"
+        android:textColor="#ffffff"
+        android:background="@drawable/mybuttonblue"
         />
 
 
@@ -39,6 +43,7 @@
         android:text="@string/uploadImage"
         android:clickable="false"
         android:id="@+id/upload_to_server"
+        android:background="#FFC107"
         />
 
 </LinearLayout>

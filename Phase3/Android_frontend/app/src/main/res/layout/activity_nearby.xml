@@ -43,6 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Previous"
+                android:background="#FFC107"
                 android:visibility="invisible"
                 android:id="@+id/nearby_view_previous"
                 android:layout_weight="1"
@@ -51,17 +52,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="View more"
+                android:background="#3D5AFE"
                 android:id="@+id/nearby_view_more"
                 android:layout_weight="1"
                 />
         </LinearLayout>
 
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/back_from_nearbypics"
-            android:text="View All Streams"
-            android:layout_weight="1"/>
+
     </LinearLayout>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/back_from_nearbypics"
+        android:text="View All Streams"
+        android:layout_gravity="center"
+        android:textColor="#ffffff"
+        android:background="@drawable/mybuttongreen"
+        />
 </LinearLayout>

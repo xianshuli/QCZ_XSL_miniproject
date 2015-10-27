@@ -58,6 +58,8 @@
             android:layout_height="wrap_content"
             android:text="@string/imagePage"
             android:onClick="viewAllImages"
+            android:textColor="#ffffff"
+            android:background="@drawable/mybuttonblue"
             />
 
     </LinearLayout>

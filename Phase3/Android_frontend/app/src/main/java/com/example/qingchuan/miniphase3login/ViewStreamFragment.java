@@ -130,13 +130,17 @@ public class ViewStreamFragment extends Fragment {
         return v;
     }
 
-    private void setupAdapter(ArrayList<String> coverurllist){
+    private void setupAdapter(ArrayList<String> coverurllist, ArrayList<String> stream_name,
+                                ArrayList<String> stream_owner){
         if(getActivity() == null || mGridView == null) return;
         Log.i(TAG,"We are in adapter");
         //mGridView.setAdapter(new ArrayAdapter<String>(getActivity(),
         //        android.R.layout.simple_gallery_item, mItems));
-        mGridView.setAdapter(new ImageAdapter(getActivity(),coverurllist,getActivity().getLayoutInflater()));
+       // mGridView.setAdapter(new ImageAdapter(getActivity(),coverurllist,getActivity().getLayoutInflater()));
 
+        mGridView.setAdapter(new MyAdapter(getActivity(),coverurllist, stream_name, stream_owner,
+                usr_email, getActivity().getLayoutInflater()
+                ));
     }
 
     private void fillStreamInGrid(){
@@ -161,8 +165,9 @@ public class ViewStreamFragment extends Fragment {
                         streamOwner.add(stream_owner.getString(i));
                     }
 
-                    setupAdapter(imageURLs);
+                    setupAdapter(imageURLs, mItems, streamOwner);
 
+                    /*
                     mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -173,7 +178,7 @@ public class ViewStreamFragment extends Fragment {
                             i.putExtra(ViewStreamFragment.STREAM_NAME, mItems.get(position));
                             startActivity(i);
                         }
-                    });
+                    });*/
 
                 }catch(JSONException j){
                     System.out.println("JSON Error");
