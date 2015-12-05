@@ -1,0 +1,51 @@
+application: perfectroommate
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: yes
+
+handlers:
+
+- url: /favicon\.ico
+  static_files: favicon.ico
+  upload: favicon\.ico
+
+- url: /img
+  static_dir: img
+
+- url: /css
+  static_dir: css
+
+- url: /js
+  static_dir: js
+
+- url: /fonts
+  static_dir: fonts
+
+
+- url: /get_channel_token
+  script: channel_server.app
+
+- url: /opened
+  script: channel_server.app
+
+- url: /personal_info_handler
+  script:  personal_info_handler.app
+
+- url: /personal_preference_handler
+  script: personal_preference_handler.app
+
+- url: /management
+  script: management.app
+
+- url: /my_pref_setting
+  script: set_preference.app
+
+- url: /
+  script: main.app
+
+libraries:
+- name: webapp2
+  version: "2.5.2"
+- name: jinja2
+  version: latest

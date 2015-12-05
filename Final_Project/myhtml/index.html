@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<h1>Welcome to Perfect Roommate</h1>
+   <h3>We match the best for you</h3>
+   {% if usr%}
+        <a href="{{ url2man }}?usr={{usr}}">Go</a>
+        <a href="{{ url }}">{{ url_linktext }}</a>
+   {% else%}
+        <a href="{{ url }}">{{ url_linktext }}</a>
+   {% endif%}
+</body>
+</html>
