@@ -57,7 +57,7 @@ class MainHandler(webapp2.RequestHandler):
         usr_personal_info.put()
 
         # call match engine to compute number of match
-        update_match_engine.update_match()
+        update_match_engine.update_match(str(usr_login))
 
 
 

@@ -270,6 +270,7 @@
                         <li><a href="#message">Message</a></li>
                         <li><a href="#about">Matches</a></li>
                         <li> <div class="badge" id="match_found_number">1</div></li>
+                        <li><a href="{{ logout_url }}"><button type="button" class="btn btn-danger">Logout</button></a></li>
                       </ul>
                     </div>
               </div>
@@ -374,7 +375,7 @@
         };
 
         sendMessage = function(path, opt_param) {
-          path += '?client_ID=' + usr+"management_page";
+          path += '?client_ID=' + usr;
           if (opt_param) {
             path += '&' + opt_param;
           }
@@ -385,10 +386,11 @@
 
         onOpened = function() {
              //alert("Channel Opened!")
-             sendMessage('/opened');
+             sendMessage('/opened', "source=management_page");
          };
 
         onMessage = function(m) {
+            //alert("Message received");
             newState = JSON.parse(m.data);
             var num_of_new_matches = newState["num_of_matches"];
 

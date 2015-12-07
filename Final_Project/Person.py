@@ -22,9 +22,8 @@ class Person(ndb.Model):
     musictv_choice = ndb.IntegerProperty()
     cleanliness_choice = ndb.IntegerProperty()
 
-    # people match this person's preference
+    # number of new notification and if usr has checked it
+    usr_notification = ndb.IntegerProperty()
     usr_viewed_updates = ndb.BooleanProperty()
-
-    # people this person matches for
 
 

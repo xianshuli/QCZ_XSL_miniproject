@@ -880,7 +880,7 @@ input[name$="[postal]"] {
     };
 
     sendMessage = function(path, opt_param) {
-      path += '?client_ID=' + usr+"preferencepage";
+      path += '?client_ID=' + usr;
       if (opt_param) {
         path += '&' + opt_param;
       }
@@ -891,7 +891,7 @@ input[name$="[postal]"] {
 
     onOpened = function() {
          //alert("Channel Opened!")
-         sendMessage('/opened');
+         sendMessage('/opened', "source=preferencepage");
      };
 
     onMessage = function(m) {
@@ -939,7 +939,7 @@ input[name$="[postal]"] {
             url: "/personal_preference_handler",
             data: JSON.stringify(usr_preferences),
             success: function() {
-              //$(location).attr('href','/management');
+              $(location).attr('href','/management');
             },
             error: function(){
               alert("Failed");

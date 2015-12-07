@@ -11,6 +11,8 @@ class MainHandler(webapp2.RequestHandler):
     def post(self):
         # get the usr email info
         usr_login = users.get_current_user()
+
+        print("Update "+str(usr_login)+" 's personal information\n")
         
         # The validility of these input fields are checked by JavaScript in the front end
         usr_name = self.request.get('name_input')
@@ -58,6 +60,7 @@ class MainHandler(webapp2.RequestHandler):
             new_usr_info.person_phone_number = usr_phone_area + usr_phone_notarea         
             new_usr_info.personInfoSet = True
             new_usr_info.usr_viewed_updates = False
+            new_usr_info.usr_notification = 0
             new_usr_info.put()
 
 app = webapp2.WSGIApplication([
