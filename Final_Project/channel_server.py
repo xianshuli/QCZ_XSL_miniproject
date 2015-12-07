@@ -9,10 +9,18 @@ import time
 from google.appengine.api import channel
 
 
-def notifiyclient(clientID, num_of_matches):
+def notifiyclient(clientID):
+        # get num of notifications
+        usr_i_info = Person.Person.query(
+                    ancestor=management.person_key(clientID)).fetch(1)[0]
+        num_of_matches = usr_i_info.usr_notification
         j_num_matches = {"num_of_matches": num_of_matches}
         message = json.dumps(j_num_matches)
-        channel.send_message(clientID, message)
+        possible_client1 = clientID+"management_page"
+        possible_client2 = clientID+"preferencepage"
+        print("start to send messages")
+        channel.send_message(possible_client1, message)
+        channel.send_message(possible_client2, message)
 
 
 class TokenGenerator(webapp2.RequestHandler):
@@ -33,7 +41,6 @@ class OpenedPage(webapp2.RequestHandler):
     def post(self):
         usr_name = self.request.get('client_ID')
         source = self.request.get('source')
-        client_ID = usr_name+source
 
         # fetch usr info
         usr_personal_info = Person.Person.query(
@@ -45,8 +52,8 @@ class OpenedPage(webapp2.RequestHandler):
             usr_checked_notification = usr_personal_info_data.usr_viewed_updates
 
             if num_notification > 0 and (not usr_checked_notification):
-                print("Send "+client_ID + " "+ str(num_notification) + "notifications\n")
-                notifiyclient(client_ID, num_notification)
+                print("Send "+usr_name + " "+ str(num_notification) + "notifications\n")
+                notifiyclient(usr_name)
             else:
                 print("No notification unread")
 

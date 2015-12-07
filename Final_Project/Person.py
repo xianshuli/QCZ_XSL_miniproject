@@ -4,6 +4,8 @@ from google.appengine.ext import ndb
 
 
 class Person(ndb.Model):
+    # person's personal information
+    person_account = ndb.StringProperty()
     personInfoSet = ndb.BooleanProperty()
     person_name = ndb.StringProperty()
     person_gender = ndb.StringProperty()
@@ -25,5 +27,8 @@ class Person(ndb.Model):
     # number of new notification and if usr has checked it
     usr_notification = ndb.IntegerProperty()
     usr_viewed_updates = ndb.BooleanProperty()
+
+    # person's current match list
+    current_matches = ndb.StringProperty(repeated=True)
 
 

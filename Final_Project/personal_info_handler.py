@@ -3,6 +3,7 @@ __author__ = 'Qingchuan'
 import webapp2
 import Person
 import management
+import update_match_engine
 
 from google.appengine.api import users
 
@@ -15,6 +16,7 @@ class MainHandler(webapp2.RequestHandler):
         print("Update "+str(usr_login)+" 's personal information\n")
         
         # The validility of these input fields are checked by JavaScript in the front end
+        usr_account = str(usr_login)
         usr_name = self.request.get('name_input')
         usr_gender = self.request.get('gender_input')
         usr_age = int(self.request.get('age_input'))
@@ -25,6 +27,7 @@ class MainHandler(webapp2.RequestHandler):
         usr_phone_notarea = self.request.get('phone_notarea_input')
 
         # following print are used for testing parameter passing
+        print(usr_account)
         print(usr_name)
         print(usr_gender)
         print(usr_age)
@@ -51,6 +54,7 @@ class MainHandler(webapp2.RequestHandler):
         else:
             #create a ndb entry
             new_usr_info = Person.Person(parent= management.person_key(str(usr_login)))
+            new_usr_info.person_account = usr_account
             new_usr_info.person_name = usr_name
             new_usr_info.person_gender = usr_gender
             new_usr_info.person_age = usr_age
@@ -62,6 +66,9 @@ class MainHandler(webapp2.RequestHandler):
             new_usr_info.usr_viewed_updates = False
             new_usr_info.usr_notification = 0
             new_usr_info.put()
+
+        # call match engine to compute number of match
+        update_match_engine.update_match(str(usr_login))
 
 app = webapp2.WSGIApplication([
     ('/personal_info_handler', MainHandler)
