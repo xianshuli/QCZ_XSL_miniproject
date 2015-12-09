@@ -57,6 +57,8 @@
             {% for person in chat_list%}
                 <tr>
                     <td onclick="showChatDialog(this)" id="contactname">{{ person.person_account }}</td>
+                    <td id="unread_{{ person.person_account}}" style="padding-left: 30px">
+                        <img src="/img/mail-message-new.png" style="visibility: hidden"></td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -121,8 +123,14 @@
            $("#dialogWindow").append("<tr><td><p class=\"triangle-right right\">"+chatcontent+"</p></td></tr>");
             // scroll down
             scrollToBottom()
+            setMyUnreadToFalse(from_account)
         }else{
-            alert("different chatter: from "+from_account+" \ncurrent is "+currentMate.innerHTML);
+            //alert("different chatter: from "+from_account+" \ncurrent is "+currentMate.innerHTML);
+            // show the tag beside the from_account
+            var potential_id = "unread_"+from_account;
+            var td = document.getElementById(potential_id);
+            var myimg = td.getElementsByTagName('img')[0];
+            myimg.style.visibility = "visible";
         }
     };
 
@@ -143,7 +151,12 @@
 
         // initialize the current chatter
         currentMate = getLandChatMate();
-        currentMate.style.backgroundColor = "#ff00aa";
+        if(currentMate){
+           currentMate.style.backgroundColor = "#ff00aa";
+           showChatDialog(currentMate);
+        }
+
+        tagUnreadDialog();
 
         $("#chatInput").submit(function (e) {
         e.preventDefault();
@@ -179,6 +192,12 @@
         currentMate.style.backgroundColor = 'transparent';
         currentMate = elem;
         currentMate.style.backgroundColor = '#ff00aa';
+
+        // set unread tag to invisible
+        var potential_id = "unread_"+elem.innerHTML;
+        var td = document.getElementById(potential_id);
+        var myimg = td.getElementsByTagName('img')[0];
+        myimg.style.visibility = "hidden";
 
         // send a ajax request to retrieve the history
         $.ajax({
@@ -231,10 +250,54 @@
         // for now get the 1st on the chat list
         var myTable = document.getElementById('contactList');
         var rows =  myTable.rows;
-        var firstRow = rows[0];
-        var Columns = firstRow.cells;
-        return Columns[0];
+        if(rows){
+            var firstRow = rows[0];
+            var Columns = firstRow.cells;
+            return Columns[0];
+        }else{
+            return null
+        }
     }
+
+    function tagUnreadDialog(){
+        var datastring = 'client_ID='+usr;
+        $.ajax({
+               type: "GET",
+               url: "/get_unread_candidates",
+               data: datastring,
+               success: function (text) {
+                   text = text.toString();
+                   var re = /'(.*?)'/g;
+                   var res = text.match(re);
+
+                   for (i = 0; i < res.length; i++) {
+                       var potential_id = "unread_"+res[i].replace(/'/g, "");
+                       var td = document.getElementById(potential_id);
+                       var myimg = td.getElementsByTagName('img')[0];
+                       myimg.style.visibility = "visible";
+                   }
+               },
+               error: function () {
+                   alert("Failed to retrive data");
+               }
+           })
+    }
+
+    function setMyUnreadToFalse(whoichat){
+        var datastring = 'whoichat='+whoichat;
+        $.ajax({
+               type: "GET",
+               url: "/setMyUnreadToFalse",
+               data: datastring,
+               success: function (text) {
+
+               },
+               error: function () {
+                   alert("Failed to retrive data");
+               }
+           })
+    }
+
 </script>
 
 </body>

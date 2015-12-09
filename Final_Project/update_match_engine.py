@@ -3,6 +3,7 @@ __author__ = 'Qingchuan'
 import management
 import Person
 import channel_server
+import update_chattarget_engine
 
 
 def update_match(usr_login):
@@ -61,6 +62,10 @@ def updateMutualMatches(usr_login):
                 if usr_i_school == usr_school:
                     print("Going to append "+usr_i_account+" to "+(str(usr_login)))
                     usr_current_matches.append(usr_i_account)
+
+                    # try to test and add this potential new match to chat list
+                    update_chattarget_engine.updateMutualMatches(usr_login, usr_i_account)
+
                     new_match = new_match + 1
                 usr_i_info.put()
 
@@ -80,6 +85,10 @@ def updateMutualMatches(usr_login):
                 usr_i_notification = usr_i_info.usr_notification
                 print("Going to append "+(str(usr_login))+" to "+usr_i_account)
                 usr_i_match_list.append(str(usr_login))
+
+                # try to test and add this potential new match to chat list
+                update_chattarget_engine.updateMutualMatches(usr_i_account, usr_login)
+
                 usr_i_info.usr_notification = usr_i_notification + 1
                 usr_i_info.usr_viewed_updates = False
                 usr_i_has_new_noti = True

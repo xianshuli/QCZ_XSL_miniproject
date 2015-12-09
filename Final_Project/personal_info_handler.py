@@ -50,7 +50,6 @@ class MainHandler(webapp2.RequestHandler):
             usr_ndb_info[0].person_phone_number = usr_phone_area + usr_phone_notarea         
             usr_ndb_info[0].personInfoSet = True
             usr_ndb_info[0].usr_viewed_updates = False
-            print(usr_ndb_info[0].myChatHistory[0].person_account)
             usr_ndb_info[0].put()
         else:
             #create a ndb entry
@@ -70,6 +69,7 @@ class MainHandler(webapp2.RequestHandler):
 
             # ================================================================================
             # hard code the chat history for testing only
+            '''
             if usr_account == "test2@example.com":
                 # creat a PersonIChat
                 new_chat_person = Person.PersonIChat()
@@ -91,7 +91,7 @@ class MainHandler(webapp2.RequestHandler):
 
                 # retrieve to check
                 print(new_usr_info.myChatHistory[0].person_account)
-
+            '''
             # =================================================================================
 
             new_usr_info.put()

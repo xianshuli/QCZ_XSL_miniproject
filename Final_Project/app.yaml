@@ -39,6 +39,12 @@ handlers:
 - url: /retrieve_Dialog_history
   script: chat_server_helper.app
 
+- url: /get_unread_candidates
+  script: chat_server_helper.app
+
+- url: /setMyUnreadToFalse
+  script: chat_server_helper.app
+
 
 - url: /personal_info_handler
   script:  personal_info_handler.app

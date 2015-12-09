@@ -10,7 +10,7 @@ from google.appengine.api import channel
 
 
 def notifiyclient(clientID, caller, chatcontent):
-        # get num of notifications
+        # set caller's new message unread to True
         usr_i_info = Person.Person.query(
                     ancestor=management.person_key(clientID)).fetch(1)[0]
 
@@ -18,7 +18,7 @@ def notifiyclient(clientID, caller, chatcontent):
                          "chatcontent": chatcontent}
         message = json.dumps(j_messagefrom)
 
-        possible_client1 = clientID+"management_page"
+        possible_client1 = clientID+"chatnote_management_page"
         possible_client2 = clientID+"chatroom"
         print("start to send messages from chat server to "+possible_client1)
         channel.send_message(possible_client1, message)
@@ -107,7 +107,6 @@ class NewMessageHandler(webapp2.RequestHandler):
                 chat_record.new_message_unread = True
                 # append the message
                 print("add to a existing chat record")
-                print(chat_record.chat_history[0])
                 chat_record.chat_history.append(message)
                 break
 
