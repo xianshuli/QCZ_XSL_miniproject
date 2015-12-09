@@ -72,8 +72,31 @@ class SetMyUnreadToFalse(webapp2.RequestHandler):
         usr_personal_info.put()
 
 
+class CheckUnreadMessage(webapp2.RequestHandler):
+    def get(self):
+        curr_usr = users.get_current_user()
+        curr_usr = str(curr_usr)
+
+        # retrive his/her chat history
+        usr_personal_info = Person.Person.query(
+            ancestor=management.person_key(str(curr_usr))).fetch(1)
+
+        hasUnread = False
+
+        if usr_personal_info:
+            person_info = usr_personal_info[0]
+            myChatHistory = person_info.myChatHistory
+
+            for personIchat in myChatHistory:
+                if personIchat.new_message_unread is True:
+                    hasUnread = True
+                    break
+
+        self.response.write(hasUnread)
+
 app = webapp2.WSGIApplication([
     ('/retrieve_Dialog_history', RetrieveDialogHistory),
     ('/get_unread_candidates', GetUnreadList),
     ('/setMyUnreadToFalse', SetMyUnreadToFalse),
+    ('/check_unread_message', CheckUnreadMessage),
 ], debug=True)

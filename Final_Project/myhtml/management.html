@@ -15,11 +15,18 @@
     <link type="text/css" media="print" rel="stylesheet" href="https://cdn.jotfor.ms/css/printForm.css?3.3.9893" />
 <style>
     .badge {
-    background: -webkit-gradient(
-  radial, 500 25%, 20, 500 25%, 40, from(red), to(red)
-);
-        margin-top: 16px;
-}
+                background: -webkit-gradient(
+              radial, 500 25%, 20, 500 25%, 40, from(red), to(red)
+            );
+                    margin-top: 16px;
+            }
+
+    #overlay{
+                   text-align:center;
+                   opacity:0;
+                   -webkit-transition: opacity .25s ease;
+                    -moz-transition: opacity .25s ease;
+            }
 </style>
 </head>
 
@@ -267,7 +274,11 @@
 
                       </ul>
                       <ul class="nav navbar-nav pull-right">
-                        <li><a href="/chatroom">Message</a></li>
+                        <li><a href="/chatroom" id="chatroomenter">Message
+                            <div id="overlay">
+                                <span id="incomingchat"><img src="/img/mail-message-new_in_navbar.png"></span>
+                            </div>
+                        </a></li>
                         <li><a href="#about">Matches</a></li>
                         <li> <div class="badge" id="match_found_number">1</div></li>
                         <li><a href="{{ logout_url }}"><button type="button" class="btn btn-danger">Logout</button></a></li>
@@ -411,9 +422,10 @@
          };
 
         onChatMessage = function(m){
-            alert("Message from chat server received");
+            //alert("Message from chat server received");
             chatmessage = JSON.parse(m.data);
             var from_account = chatmessage["new_message_from"];
+            $('#overlay').css({ opacity: 1 });
         };
 
         onMessage = function(m) {
@@ -434,6 +446,11 @@
             goog.appengine.Socket.POLLING_TIMEOUT_MS = 500; //poll every 5 seconds
             open_The_Chaneel();
             open_The_Chat_Chaneel();
+            check_unread_message();
+
+            $("#chatroomenter").click(function () {
+                $('#overlay').css({ opacity: 0 });
+            });
 
             $("#personal_info_form").submit( function(e){
                 e.preventDefault();
@@ -471,6 +488,24 @@
           alert("window closed");
           socket.close();
         });
+
+        function check_unread_message(){
+            var datastring = 'client_ID='+usr;
+            $.ajax({
+                   type: "GET",
+                   url: "/check_unread_message",
+                   data: datastring,
+                   success: function (text) {
+                       text = text.toString();
+                       if(text == 'True'){
+                           $('#overlay').css({ opacity: 1 });
+                       }
+                   },
+                   error: function () {
+                       alert("Failed to retrive data");
+                   }
+               })
+        }
 
     </script>
 </body>
