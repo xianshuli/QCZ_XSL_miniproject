@@ -29,6 +29,17 @@ handlers:
 - url: /opened
   script: channel_server.app
 
+
+- url: /get_chat_channel_token
+  script: chat_server.app
+
+- url: /newMessage
+  script: chat_server.app
+
+- url: /retrieve_Dialog_history
+  script: chat_server_helper.app
+
+
 - url: /personal_info_handler
   script:  personal_info_handler.app
 
@@ -40,6 +51,9 @@ handlers:
 
 - url: /my_pref_setting
   script: set_preference.app
+
+- url: /chatroom
+  script: chatroom.app
 
 - url: /
   script: main.app

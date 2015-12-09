@@ -57,12 +57,6 @@ class OpenedPage(webapp2.RequestHandler):
             else:
                 print("No notification unread")
 
-        i = 7
-        while i < 4:
-            notifiyclient(usr_name, i)
-            i = i+1
-            time.sleep(5)
-
 
 app = webapp2.WSGIApplication([
     ('/get_channel_token', TokenGenerator),

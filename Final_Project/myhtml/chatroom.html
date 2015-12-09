@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Room</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/carousel.css" rel="stylesheet">
+    <link href="/css/chatbox.css" rel="stylesheet" >
+    <style>
+    thead, tbody { display: block; }
+    [id=contactname]:hover{
+        cursor: pointer;
+    }
+    tbody {
+        height: 500px;       /* Just for the demo          */
+        overflow-y: auto;    /* Trigger vertical scroll    */
+        overflow-x: hidden;  /* Hide the horizontal scroll */
+    }
+    </style>
+</head>
+
+<body style="background-image: url(/img/chat_background.gif)">
+<div class="navbar-wrapper">
+      <div class="container">
+          <nav class="navbar navbar-inverse navbar-static-top">
+              <div class="container">
+                  <div class="navbar-header">
+                      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                      </button>
+                      <a class="navbar-brand" href="#">PERFECT roommate</a>
+                    </div>
+                    <div id="navbar" class="navbar-collapse collapse">
+                      <ul class="nav navbar-nav">
+                        <li class="active"><a href="/management">Home</a></li>
+                      </ul>
+                      <ul class="nav navbar-nav pull-right">
+                        <li><a href="{{ logout_url }}"><button type="button" class="btn btn-danger">Logout</button></a></li>
+                      </ul>
+                    </div>
+              </div>
+          </nav>
+      </div>
+
+      <div style="position: relative">
+
+        <table style="float: left; width: 50%;">
+            <thead>
+            <tr>
+                <th>Person</th>
+            </tr>
+            </thead>
+            <tbody id="contactList">
+            {% for person in chat_list%}
+                <tr>
+                    <td onclick="showChatDialog(this)" id="contactname">{{ person.person_account }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <table style="float: left; width: 50%;">
+            <tbody id="dialogWindow">
+            </tbody>
+            <tbody style="height: 40px">
+            <tr>
+                <td>
+                    <div>
+                        <form id="chatInput" name="chatInput">
+                          <input type="text" name="chatContentInput">
+                          <input type="submit" value="Send" style="float: right">
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+      </div>
+ </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script type="text/javascript" src="/_ah/channel/jsapi"></script>
+<script>
+    var usr = '{{usr}}';
+    var socket;
+    var currentMate;
+
+    open_The_Chat_Chaneel = function () {
+       var dataString = 'client_ID='+ usr+"chatroom";
+         $.ajax({
+               type: "GET",
+               url: "/get_chat_channel_token",
+               data: dataString,
+               success: function (text) {
+                   //alert(text);
+                   var channel = new goog.appengine.Channel(text);
+                   socket = channel.open();
+                   socket.onopen = function(){};
+                   socket.onmessage = onMessage;
+                   socket.onerror = function() {open_The_Chat_Chaneel()}; // if error occurs try again, because the logic should be OK
+                   socket.onclose = function(){};
+               },
+               error: function () {
+                   alert("Can't open chat channel");
+               }
+           })
+    };
+
+    onMessage = function(m){
+        // if the message sender == currentMate.innerHTML update the dialog, otherwise
+        // put a tag beside the sender in the contact list
+        chatmessage = JSON.parse(m.data);
+        var from_account = chatmessage["new_message_from"];
+        var chatcontent = chatmessage["chatcontent"];
+
+        if(from_account == currentMate.innerHTML){
+           $("#dialogWindow").append("<tr><td><p class=\"triangle-right right\">"+chatcontent+"</p></td></tr>");
+            // scroll down
+            scrollToBottom()
+        }else{
+            alert("different chatter: from "+from_account+" \ncurrent is "+currentMate.innerHTML);
+        }
+    };
+
+    sendChatMessage = function(path, opt_param) {
+          path += '?client_ID=' + usr;
+          if (opt_param) {
+            path += '&' + opt_param;
+          }
+          var xhr = new XMLHttpRequest();
+          xhr.open('POST', path, true);
+          xhr.send();
+    };
+
+
+    jQuery(document).ready( function($) {
+
+        open_The_Chat_Chaneel()
+
+        // initialize the current chatter
+        currentMate = getLandChatMate();
+        currentMate.style.backgroundColor = "#ff00aa";
+
+        $("#chatInput").submit(function (e) {
+        e.preventDefault();
+            var chatcontent = $('input[name="chatContentInput"]').val();
+            //alert(chatcontent);
+            // clear the input field
+            $('input[name="chatContentInput"]').val('');
+
+            // add the new chat content to dialog window
+            $("#dialogWindow").append("<tr><td><p class=\"triangle-right left\">"+chatcontent+"</p></td></tr>")
+
+            // scroll to buttom
+            scrollToBottom()
+
+            // send the message to the chat server
+            sendChatMessage('/newMessage', 'chatcontent='+chatcontent+'&receiverID='+currentMate.innerHTML)
+        })
+
+    })
+
+    function scrollToBottom() {
+       var elmnt = document.getElementById("dialogWindow");
+       var y = elmnt.scrollHeight;
+       var scrollBottom = y - 500;
+       //alert("y = "+y+" scrollBottom = "+scrollBottom)
+       $("#dialogWindow").scrollTop(scrollBottom);
+    }
+
+    function showChatDialog(elem){
+        var datastring = 'client_ID='+elem.innerHTML;
+
+        // change chat mate
+        currentMate.style.backgroundColor = 'transparent';
+        currentMate = elem;
+        currentMate.style.backgroundColor = '#ff00aa';
+
+        // send a ajax request to retrieve the history
+        $.ajax({
+               type: "GET",
+               url: "/retrieve_Dialog_history",
+               data: datastring,
+               success: function (text) {
+                   // save the returned history to an array
+                   var re = /{(.*?)}/g;
+                   text = text.toString();
+                   text = text.replace(/\n/g, "\n")
+                   .replace(/\\'/g, "'")
+                   .replace(/\\"/g, '"')
+                   .replace(/\\&/g, "\\&")
+                   .replace(/\\r/g, "\\r")
+                   .replace(/\\t/g, "\\t")
+                   .replace(/\\b/g, "\\b")
+                   .replace(/\\f/g, "\\f");
+                   var res = text.match(re);
+                   //alert(res[2]+"\n"+res[3])
+
+                   // clear the current dialog window
+                   $("#dialogWindow").empty();
+
+                   // Go over the array of dialog add correspondingly
+                   for (i = 0; i < res.length; i++) {
+                        //parse json
+                       //alert("Parse entry: "+i);
+                       var dialogentry = JSON.parse(res[i].toString());
+                       var myMessage = dialogentry['myMessage']
+                       var messageContent = dialogentry['content']
+                       if(myMessage){
+                           $("#dialogWindow").append("<tr><td><p class=\"triangle-right left\">"+messageContent+"</p></td></tr>")
+                       }else{
+                           $("#dialogWindow").append("<tr><td><p class=\"triangle-right right\">"+messageContent+"</p></td></tr>")
+                       }
+                   }
+
+                   // scroll to bottom
+                   scrollToBottom();
+               },
+
+               error: function () {
+                   alert("Failed to retrive data");
+               }
+           })
+    }
+
+    function getLandChatMate(){
+        // for now get the 1st on the chat list
+        var myTable = document.getElementById('contactList');
+        var rows =  myTable.rows;
+        var firstRow = rows[0];
+        var Columns = firstRow.cells;
+        return Columns[0];
+    }
+</script>
+
+</body>
+</html>

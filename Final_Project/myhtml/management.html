@@ -267,7 +267,7 @@
 
                       </ul>
                       <ul class="nav navbar-nav pull-right">
-                        <li><a href="#message">Message</a></li>
+                        <li><a href="/chatroom">Message</a></li>
                         <li><a href="#about">Matches</a></li>
                         <li> <div class="badge" id="match_found_number">1</div></li>
                         <li><a href="{{ logout_url }}"><button type="button" class="btn btn-danger">Logout</button></a></li>
@@ -374,6 +374,27 @@
                })
         };
 
+        open_The_Chat_Chaneel = function () {
+           var dataString = 'client_ID='+ usr+"management_page";
+             $.ajax({
+                   type: "GET",
+                   url: "/get_chat_channel_token",
+                   data: dataString,
+                   success: function (text) {
+                       //alert(text);
+                       var channel = new goog.appengine.Channel(text);
+                       socket = channel.open();
+                       socket.onopen = function(){alert("Chat Channel Opened!");};
+                       socket.onmessage = onChatMessage;
+                       socket.onerror = function() {open_The_Chat_Chaneel()}; // if error occurs try again, because the logic should be OK
+                       socket.onclose = function(){};
+                   },
+                   error: function () {
+                       alert("Can't open chat channel");
+                   }
+               })
+        };
+
         sendMessage = function(path, opt_param) {
           path += '?client_ID=' + usr;
           if (opt_param) {
@@ -385,9 +406,15 @@
         };
 
         onOpened = function() {
-             //alert("Channel Opened!")
+             alert("Normal Channel Opened!");
              sendMessage('/opened', "source=management_page");
          };
+
+        onChatMessage = function(m){
+            alert("Message from chat server received");
+            chatmessage = JSON.parse(m.data);
+            var from_account = chatmessage["new_message_from"];
+        };
 
         onMessage = function(m) {
             //alert("Message received");
@@ -400,11 +427,12 @@
               number_item.html(num_of_new_matches);
             }
             alert(newState["num_of_matches"])
-          }
+          };
 
         jQuery(document).ready( function($) {
             $('#match_found_number').hide();
-            open_The_Chaneel()
+            open_The_Chaneel();
+            open_The_Chat_Chaneel();
 
             $("#personal_info_form").submit( function(e){
                 e.preventDefault();

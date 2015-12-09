@@ -3,6 +3,13 @@ __author__ = 'Qingchuan'
 from google.appengine.ext import ndb
 
 
+class PersonIChat(ndb.Model):
+    # who I chat with and a pointer to the chat history
+    person_account = ndb.StringProperty()
+    chat_history = ndb.JsonProperty(repeated=True)
+    new_message_unread = ndb.BooleanProperty()
+
+
 class Person(ndb.Model):
     # person's personal information
     person_account = ndb.StringProperty()
@@ -31,4 +38,6 @@ class Person(ndb.Model):
     # person's current match list
     current_matches = ndb.StringProperty(repeated=True)
 
+    # person's chat history
+    myChatHistory = ndb.LocalStructuredProperty(PersonIChat, repeated=True)
 

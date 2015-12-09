@@ -50,6 +50,7 @@ class MainHandler(webapp2.RequestHandler):
             usr_ndb_info[0].person_phone_number = usr_phone_area + usr_phone_notarea         
             usr_ndb_info[0].personInfoSet = True
             usr_ndb_info[0].usr_viewed_updates = False
+            print(usr_ndb_info[0].myChatHistory[0].person_account)
             usr_ndb_info[0].put()
         else:
             #create a ndb entry
@@ -65,6 +66,34 @@ class MainHandler(webapp2.RequestHandler):
             new_usr_info.personInfoSet = True
             new_usr_info.usr_viewed_updates = False
             new_usr_info.usr_notification = 0
+            new_usr_info.myChatHistory = []  # init with empty list
+
+            # ================================================================================
+            # hard code the chat history for testing only
+            if usr_account == "test2@example.com":
+                # creat a PersonIChat
+                new_chat_person = Person.PersonIChat()
+                new_chat_person.person_account = "test@example.com"
+                new_chat_person.new_message_unread = False
+                new_chat_person.chat_history = []
+
+                # create another one
+                new_chat_person2 = Person.PersonIChat()
+                new_chat_person2.person_account = "test3@example.com"
+                new_chat_person2.new_message_unread = False
+                new_chat_person2.chat_history = []
+
+                # add this PersonIChat to the usr
+                chatPeopleList = new_usr_info.myChatHistory
+                chatPeopleList.append(new_chat_person)
+                chatPeopleList.append(new_chat_person2)
+                new_usr_info.myChatHistory = chatPeopleList
+
+                # retrieve to check
+                print(new_usr_info.myChatHistory[0].person_account)
+
+            # =================================================================================
+
             new_usr_info.put()
 
         # call match engine to compute number of match
