@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Matches</title>
+    <!-- Bootstrap core CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="/css/carousel.css" rel="stylesheet">
+    <link href="/css/jumbotron-narrow.css" rel="stylesheet">
+
+    <style>
+        #table-wrapper2 {
+          position:relative;
+        }
+
+        #table-scroll2 {
+          height:400px;
+          overflow:auto;
+          margin-top:20px;
+        }
+
+        #table-wrapper table thead th .text {
+          position:absolute;
+          top:-20px;
+          z-index:2;
+          height:20px;}
+
+        #table-wrapper2 table thead th .text {
+          position:absolute;
+          top:-20px;
+          z-index:2;
+          height:20px;}
+    </style>
+
+</head>
+<body style="background-image: url(/img/sky-blue.jpg); background-repeat:no-repeat;background-size:cover;">
+
+<div class="navbar-wrapper">
+      <div class="container">
+          <nav class="navbar navbar-inverse navbar-static-top">
+              <div class="container">
+                  <div class="navbar-header">
+                      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                      </button>
+                      <a class="navbar-brand" href="#">PERFECT roommate</a>
+                    </div>
+                    <div id="navbar" class="navbar-collapse collapse">
+                      <ul class="nav navbar-nav">
+                        <li class="active"><a href="/management">Home</a></li>
+                        <li class="dropdown">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Lookaround <span class="caret"></span></a>
+                          <ul class="dropdown-menu">
+                            <li><a href="JavaScript:centeredPopup(1);">About</a>
+                            <li><a href="JavaScript:centeredPopup(2);">Help</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="JavaScript:centeredPopup(3);">Report an Issue</a></li>
+                          </ul>
+                        </li>
+
+                      </ul>
+                      <ul class="nav navbar-nav pull-right">
+                        <li><a href="{{ logout_url }}"><button type="button" class="btn btn-danger">Logout</button></a></li>
+                      </ul>
+                    </div>
+              </div>
+          </nav>
+      </div>
+
+    <div style="position: relative">
+        <table width="100%">
+            <tr>
+                <td width="50%" style="padding: 20px">
+                    <div class="panel panel-default" style="background-color: transparent;">
+                    <!-- Default panel contents -->
+                      <div class="panel-heading text-center">People I Match</div>
+                    <div id="table-wrapper2">
+                        <div id="table-scroll2">
+                         <table class="table">
+                             <thead>
+                                <tr>
+                                      <th width="37%"><span class="text">Name</span></th>
+                                      <th width="15%"><span class="text">Gender</span></th>
+                                      <th width="15%"><span class="text">Age</span></th>
+                                      <th width="15%"><span class="text">School</span></th>
+                                      <th width="18%"><span class="text">Let Me Think</span></th>
+                                </tr>
+                             </thead>
+                             <tbody>
+                                 {% for person in current_matches %}
+                                    <tr class="info">
+                                        <td>{{person['Name']}}</td>
+                                        <td>{{person['Gender']}}</td>
+                                        <td>{{person['Age']}}</td>
+                                        <td>{{person['School']}}</td>
+                                        <td>
+                                        <div class="checkbox pull-right">
+                                            <input type="checkbox" value="">
+                                        </div>
+                                        </td>
+                                    </tr>
+                                 {% endfor %}
+                             </tbody>
+                         </table>
+                        </div>
+                    </div>
+                    </div>
+                </td>
+
+
+                <td width="50%" style="padding: 20px">
+                    <div class="jumbotron" style="padding-top: 20px; padding-bottom: 10px; margin-top: 0px; margin-bottom: 0px; background-image:url(/img/orangeyellow-background.jpg)">
+                            <h3>Your Potential Roommate</h3>
+                            <p class="lead">Qingchuan Zhu</p>
+                            <p><a class="btn btn-lg btn-success" href="/chatroom" role="button">Let's Chat!</a></p>
+                          </div>
+
+                          <div class="row marketing" style="padding-top: 0px; padding-bottom: 0px; margin-top: 0px; margin-bottom: 0px">
+                            <div class="col-lg-6">
+                              <h4 style="padding:4px;">Subheading</h4>
+                              <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
+
+                              <h4 style="padding:4px;">Subheading</h4>
+                              <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
+
+                              <h4 style="padding:4px;">Subheading</h4>
+                              <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+                            </div>
+
+                            <div class="col-lg-6">
+                              <h4 style="background-color: transparent; display: inline-flex; padding:4px; border-radius:4px;">Subheading</h4>
+                              <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
+
+                              <h4 style="padding:4px;">Subheading</h4>
+                              <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
+
+                              <h4 style="padding:4px;">Subheading</h4>
+                              <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+                            </div>
+                          </div>
+                </td>
+
+            </tr>
+        </table>
+    </div>
+ </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+
+</body>
+</html>

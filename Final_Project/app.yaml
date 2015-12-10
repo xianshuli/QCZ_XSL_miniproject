@@ -66,6 +66,9 @@ handlers:
 - url: /chatroom
   script: chatroom.app
 
+- url: /matchmanagement
+  script: matchmanagement.app
+
 - url: /popup_about
   script: popuphandler.app
 
