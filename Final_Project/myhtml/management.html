@@ -262,13 +262,10 @@
                         <li class="dropdown">
                           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Lookaround <span class="caret"></span></a>
                           <ul class="dropdown-menu">
-                            <li><a href="#">About</a>
-                            <li><a href="#">Help</a></li>
-                            <li><a href="#">Something else here</a></li>
+                            <li><a href="JavaScript:centeredPopup(1);">About</a>
+                            <li><a href="JavaScript:centeredPopup(2);">Help</a></li>
                             <li role="separator" class="divider"></li>
-                            <li class="dropdown-header">Nav header</li>
-                            <li><a href="#">Separated link</a></li>
-                            <li><a href="#">One more separated link</a></li>
+                            <li><a href="JavaScript:centeredPopup(3);">Report an Issue</a></li>
                           </ul>
                         </li>
 
@@ -364,11 +361,11 @@
         var usr = '{{usr}}';
         var socket;
 
-        open_The_Chaneel = function () {
+        open_The_Chat_Chaneel = function () {
            var dataString = 'client_ID='+ usr+"management_page";
              $.ajax({
                    type: "GET",
-                   url: "/get_channel_token",
+                   url: "/get_chat_channel_token",
                    data: dataString,
                    success: function (text) {
                        //alert(text);
@@ -378,27 +375,6 @@
                        socket.onmessage = onMessage;
                        socket.onerror = function() {socket = channel.open();}; // if error occurs try again, because the logic should be OK
                        socket.onclose = function(){socket = channel.open();};
-                   },
-                   error: function () {
-                       alert("User not found");
-                   }
-               })
-        };
-
-        open_The_Chat_Chaneel = function () {
-           var dataString = 'client_ID='+ usr+"chatnote_management_page";
-             $.ajax({
-                   type: "GET",
-                   url: "/get_chat_channel_token",
-                   data: dataString,
-                   success: function (text) {
-                       //alert(text);
-                       var channel = new goog.appengine.Channel(text);
-                       socket = channel.open();
-                       socket.onopen = function(){};
-                       socket.onmessage = onChatMessage;
-                       socket.onerror = function() {open_The_Chat_Chaneel()}; // if error occurs try again, because the logic should be OK
-                       socket.onclose = function(){};
                    },
                    error: function () {
                        alert("Can't open chat channel");
@@ -418,33 +394,32 @@
 
         onOpened = function() {
              //alert("Normal Channel Opened!");
-             sendMessage('/opened', "source=management_page");
+             sendMessage('/opened_from_management');
          };
-
-        onChatMessage = function(m){
-            //alert("Message from chat server received");
-            chatmessage = JSON.parse(m.data);
-            var from_account = chatmessage["new_message_from"];
-            $('#overlay').css({ opacity: 1 });
-        };
 
         onMessage = function(m) {
             //alert("Message received");
-            newState = JSON.parse(m.data);
-            var num_of_new_matches = newState["num_of_matches"];
-
-            var number_item = $('#match_found_number');
-            if( num_of_new_matches > 0){
-              number_item.show();
-              number_item.html(num_of_new_matches);
+            newMessage = JSON.parse(m.data);
+            var msg_type = newMessage["message_type"]
+            if(msg_type == "chatroom"){
+                //alert("Message from chat server received");
+                var from_account = newMessage["new_message_from"];
+                $('#overlay').css({ opacity: 1 });
             }
-            //alert(newState["num_of_matches"])
+
+            if(msg_type == "newmatchnotification"){
+               var num_of_new_matches = newMessage["num_of_matches"];
+
+                var number_item = $('#match_found_number');
+                if( num_of_new_matches > 0){
+                  number_item.show();
+                  number_item.html(num_of_new_matches);
+                }
+            }
           };
 
         jQuery(document).ready( function($) {
             $('#match_found_number').hide();
-            goog.appengine.Socket.POLLING_TIMEOUT_MS = 500; //poll every 5 seconds
-            open_The_Chaneel();
             open_The_Chat_Chaneel();
             check_unread_message();
 
@@ -505,6 +480,28 @@
                        alert("Failed to retrive data");
                    }
                })
+        }
+
+
+        function centeredPopup(url_num){
+            var w = 300;
+            var h = 400;
+            switch(url_num){
+                case 1:
+                    url = "/popup_about";
+                    break;
+                case 2:
+                    url = "/popup_help";
+                    break;
+                case 3:
+                    url = "/popup_report_issue";
+                    break;
+            }
+            LeftPosition = (screen.width) ? (screen.width-w)/2 : 0;
+            TopPosition = (screen.height) ? (screen.height-h)/2 : 0;
+            settings =
+            'height='+h+',width='+w+',top='+TopPosition+',left='+LeftPosition+',scrollbars=yes,resizable'
+            popupWindow = window.open(url,'popUpWindow',settings)
         }
 
     </script>

@@ -1,4 +1,4 @@
-application: perfectroommateversion1
+application: perfectroommateversion3
 version: 1
 runtime: python27
 api_version: 1
@@ -29,6 +29,8 @@ handlers:
 - url: /opened
   script: channel_server.app
 
+- url: /opened_from_management
+  script: chat_server.app
 
 - url: /get_chat_channel_token
   script: chat_server.app
@@ -63,6 +65,15 @@ handlers:
 
 - url: /chatroom
   script: chatroom.app
+
+- url: /popup_about
+  script: popuphandler.app
+
+- url: /popup_help
+  script: popuphandler.app
+
+- url: /popup_report_issue
+  script: popuphandler.app
 
 - url: /
   script: main.app

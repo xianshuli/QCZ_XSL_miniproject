@@ -18,7 +18,7 @@ def notifiyclient(clientID):
         message = json.dumps(j_num_matches)
         possible_client1 = clientID+"management_page"
         possible_client2 = clientID+"preferencepage"
-        print("start to send messages")
+        print("start to send messages to "+possible_client1+" and "+possible_client2)
         channel.send_message(possible_client1, message)
         channel.send_message(possible_client2, message)
 

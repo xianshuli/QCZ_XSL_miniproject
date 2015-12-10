@@ -103,8 +103,8 @@
                    socket = channel.open();
                    socket.onopen = function(){};
                    socket.onmessage = onMessage;
-                   socket.onerror = function() {open_The_Chat_Chaneel()}; // if error occurs try again, because the logic should be OK
-                   socket.onclose = function(){};
+                   socket.onerror = function() {socket = channel.open();}; // if error occurs try again, because the logic should be OK
+                   socket.onclose = function(){socket = channel.open();};
                },
                error: function () {
                    alert("Can't open chat channel");
@@ -112,6 +112,7 @@
            })
     };
 
+    // the type is not relevant, so we didn't test the message type
     onMessage = function(m){
         // if the message sender == currentMate.innerHTML update the dialog, otherwise
         // put a tag beside the sender in the contact list
@@ -270,11 +271,13 @@
                    var re = /'(.*?)'/g;
                    var res = text.match(re);
 
-                   for (i = 0; i < res.length; i++) {
+                   if(res){
+                      for (i = 0; i < res.length; i++) {
                        var potential_id = "unread_"+res[i].replace(/'/g, "");
                        var td = document.getElementById(potential_id);
                        var myimg = td.getElementsByTagName('img')[0];
                        myimg.style.visibility = "visible";
+                      }
                    }
                },
                error: function () {

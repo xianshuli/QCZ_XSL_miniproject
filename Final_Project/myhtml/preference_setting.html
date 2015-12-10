@@ -647,9 +647,9 @@ input[name$="[postal]"] {
                         </li>
                       </ul>
                       <ul class="nav navbar-nav pull-right">
-                        <li><a href="#message">Message</a></li>
                         <li><a href="#about">Matches</a></li>
                         <li> <div class="badge" id="match_found_number">1</div></li>
+                        <li><a href="{{ logout_url }}"><button type="button" class="btn btn-danger">Logout</button></a></li>
                       </ul>
                     </div>
               </div>
@@ -870,8 +870,8 @@ input[name$="[postal]"] {
                    socket = channel.open();
                    socket.onopen = onOpened;
                    socket.onmessage = onMessage;
-                   socket.onerror = function() {open_The_Chaneel()}; // if error occurs try again, because the logic should be OK
-                   socket.onclose = function(){};
+                   socket.onerror = function() {socket = channel.open();}; // if error occurs try again, because the logic should be OK
+                   socket.onclose = function(){socket = channel.open();};
                },
                error: function () {
                    alert("User not found");

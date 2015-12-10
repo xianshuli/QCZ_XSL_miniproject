@@ -4,25 +4,37 @@ import webapp2
 import Person
 import management
 import json
-import time
 
 from google.appengine.api import channel
 
 
-def notifiyclient(clientID, caller, chatcontent):
+def notifiyclient(clientID, caller, chatcontent, messageType):
         # set caller's new message unread to True
         usr_i_info = Person.Person.query(
                     ancestor=management.person_key(clientID)).fetch(1)[0]
 
-        j_messagefrom = {"new_message_from": caller,
-                         "chatcontent": chatcontent}
-        message = json.dumps(j_messagefrom)
+        if messageType == "chatroom":
+            j_messagefrom = {"message_type": "chatroom",
+                             "new_message_from": caller,
+                             "chatcontent": chatcontent}
+            message = json.dumps(j_messagefrom)
 
-        possible_client1 = clientID+"chatnote_management_page"
-        possible_client2 = clientID+"chatroom"
-        print("start to send messages from chat server to "+possible_client1)
-        channel.send_message(possible_client1, message)
-        channel.send_message(possible_client2, message)
+            possible_client1 = clientID+"management_page"
+            possible_client2 = clientID+"chatroom"
+            print("start to send messages from chat server to "+possible_client1)
+            channel.send_message(possible_client1, message)
+            channel.send_message(possible_client2, message)
+
+        if messageType == "newmatchnotification":
+            num_of_matches = usr_i_info.usr_notification
+            j_num_matches = {"message_type": "newmatchnotification",
+                            "num_of_matches": num_of_matches}
+            message = json.dumps(j_num_matches)
+            possible_client1 = clientID+"management_page"
+            possible_client2 = clientID+"preferencepage"
+            print("start to send messages to "+possible_client1+" and "+possible_client2)
+            channel.send_message(possible_client1, message)
+            channel.send_message(possible_client2, message)
 
 
 class TokenGenerator(webapp2.RequestHandler):
@@ -37,6 +49,27 @@ class TokenGenerator(webapp2.RequestHandler):
         # create a channel token
         token = channel.create_channel(usr_name)
         self.response.write(token)
+
+
+class OpenedPage(webapp2.RequestHandler):
+    def post(self):
+        usr_name = self.request.get('client_ID')
+        source = self.request.get('source')
+
+        # fetch usr info
+        usr_personal_info = Person.Person.query(
+            ancestor=management.person_key(usr_name)).fetch(1)
+
+        if usr_personal_info:
+            usr_personal_info_data = usr_personal_info[0]
+            num_notification = usr_personal_info_data.usr_notification
+            usr_checked_notification = usr_personal_info_data.usr_viewed_updates
+
+            if num_notification > 0 and (not usr_checked_notification):
+                print("Send "+usr_name + " "+ str(num_notification) + "notifications\n")
+                notifiyclient(usr_name, "", "", "newmatchnotification")
+            else:
+                print("No notification unread")
 
 
 class NewMessageHandler(webapp2.RequestHandler):
@@ -131,11 +164,12 @@ class NewMessageHandler(webapp2.RequestHandler):
 
         # send notification to the receiver
         # Note: for now the receiver should in management page to get this notice
-        notifiyclient(receiver, caller, chatcontent)
+        notifiyclient(receiver, caller, chatcontent, "chatroom")
 
 
 
 app = webapp2.WSGIApplication([
     ('/get_chat_channel_token', TokenGenerator),
     ('/newMessage', NewMessageHandler),
+    ('/opened_from_management', OpenedPage,)
 ], debug=True)
