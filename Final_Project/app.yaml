@@ -69,6 +69,15 @@ handlers:
 - url: /matchmanagement
   script: matchmanagement.app
 
+- url: /high_light_matches
+  script: match_page_helper.app
+
+- url: /changeoptionsonright
+  script: match_page_helper.app
+
+- url: /addpotentialpersons
+  script: potentialmatch_management.app
+
 - url: /popup_about
   script: popuphandler.app
 

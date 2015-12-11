@@ -8,6 +8,7 @@
     <!-- Custom styles for this template -->
     <link href="/css/carousel.css" rel="stylesheet">
     <link href="/css/jumbotron-narrow.css" rel="stylesheet">
+    <script src="/js/bootstrap.min.js"></script>
 
     <style>
         #table-wrapper2 {
@@ -31,6 +32,10 @@
           top:-20px;
           z-index:2;
           height:20px;}
+
+        [id=targetname]:hover{
+        cursor: pointer;
+        }
     </style>
 
 </head>
@@ -90,10 +95,10 @@
                                       <th width="18%"><span class="text">Let Me Think</span></th>
                                 </tr>
                              </thead>
-                             <tbody>
+                             <tbody id="personlist">
                                  {% for person in current_matches %}
-                                    <tr class="info">
-                                        <td>{{person['Name']}}</td>
+                                    <tr class="info" id="{{person['ID']}}">
+                                        <td onclick="changeRight(this)" id="targetname">{{person['Name']}}</td>
                                         <td>{{person['Gender']}}</td>
                                         <td>{{person['Age']}}</td>
                                         <td>{{person['School']}}</td>
@@ -109,6 +114,10 @@
                         </div>
                     </div>
                     </div>
+
+                    <button class="btn btn-primary center-block" type="button" id="addchecked">
+                        Add Checked to My Potential List!
+                    </button>
                 </td>
 
 
@@ -121,25 +130,25 @@
 
                           <div class="row marketing" style="padding-top: 0px; padding-bottom: 0px; margin-top: 0px; margin-bottom: 0px">
                             <div class="col-lg-6">
-                              <h4 style="padding:4px;">Subheading</h4>
-                              <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
+                              <h4 id="roommate_gender_head" style="padding:4px; display: inline-flex;border-radius:4px;">Roommate Gender</h4>
+                              <p id="roommate_gender_choice">{{first_person_setting['roommategender']}}</p>
 
-                              <h4 style="padding:4px;">Subheading</h4>
-                              <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
+                              <h4 id="smokingchoice_head" style="padding:4px; display: inline-flex;border-radius:4px;">Smoking Choice</h4>
+                              <p id="smokingchoice_choice">{{first_person_setting['smoking_choice']}}</p>
 
-                              <h4 style="padding:4px;">Subheading</h4>
-                              <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+                              <h4 id="overnight_guest_head" style="padding:4px; display: inline-flex;border-radius:4px;">Overnight Guest</h4>
+                              <p id="overnight_guest_choice">{{first_person_setting['overnight_guest_choice']}}</p>
                             </div>
 
                             <div class="col-lg-6">
-                              <h4 style="background-color: transparent; display: inline-flex; padding:4px; border-radius:4px;">Subheading</h4>
-                              <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
+                              <h4 id="study_habits_head" style="padding:4px; display: inline-flex; border-radius:4px;">Study Habits</h4>
+                              <p id="study_habits_choice">{{first_person_setting['study_habits_choice']}}</p>
 
-                              <h4 style="padding:4px;">Subheading</h4>
-                              <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
+                              <h4 id="sleep_habits_head" style="padding:4px; display: inline-flex;border-radius:4px;">Sleep Habits</h4>
+                              <p id="sleep_habits_choice">{{first_person_setting['sleep_habits_choice']}}</p>
 
-                              <h4 style="padding:4px;">Subheading</h4>
-                              <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+                              <h4 id="cleanliness_head" style="padding:4px; display: inline-flex;border-radius:4px;">Cleanliness</h4>
+                              <p id="cleanliness_choice">{{first_person_setting['cleanliness_choice']}}</p>
                             </div>
                           </div>
                 </td>
@@ -151,7 +160,131 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-<script src="/js/bootstrap.min.js"></script>
+
+<script>
+    var usr = '{{usr}}';
+    var current_selected_person = '{{first_person_id}}';
+    var idmap = {
+        1: "roommate_gender_head",
+        2: "smokingchoice_head",
+        3: "overnight_guest_head",
+        4: "study_habits_head",
+        5: "sleep_habits_head",
+        6: "cleanliness_head"
+    };
+
+    var idmap2 = {
+        1: "roommate_gender_choice",
+        2: "smokingchoice_choice",
+        3: "overnight_guest_choice",
+        4: "study_habits_choice",
+        5: "sleep_habits_choice",
+        6: "cleanliness_choice"
+    };
+
+    jQuery(document).ready( function($) {
+        //alert("current usr = "+usr+" target person = "+current_selected_person)
+        highlightmatch();
+
+        $("#addchecked").click( function(e){
+            e.preventDefault();
+
+            // record the checked row
+                var checkedRow = new Array();
+                $("#personlist tr").each( function(index){
+                    if($(this).find("input:checkbox").is(":checked")){
+                        var target_id = $(this).attr('id');
+                        checkedRow.push(target_id);
+                    }
+                });
+
+            var addPotentialPerson = {
+                    potentialPerson : checkedRow
+                }
+
+            $.ajax({
+               type: 'post',
+               url: "/addpotentialpersons",
+               data: JSON.stringify(addPotentialPerson),
+               success: function (text) {
+                    window.location.replace("/management");
+               },
+               error: function () {
+                   alert("Failed on add potential list");
+               }
+           })
+
+        })
+    });
+
+    function highlightmatch(){
+        var datastring = "client_ID="+usr+"&target_person="+current_selected_person;
+        $.ajax({
+               type: "GET",
+               url: "/high_light_matches",
+               data: datastring,
+               success: function (text) {
+                   var re = /([1-9])/g;
+                   var matchlist = text.match(re);
+
+                   // clear all heading styles
+                   clearStyles();
+
+                   for(i = 0; i < matchlist.length; i++){
+                       var chandiate_head = idmap[matchlist[i]];
+                       var chandiate_choice = idmap2[matchlist[i]];
+                       $('#'+chandiate_head).css("backgroundColor","#419641").css("color","white");
+                       //$('#'+chandiate_choice).css("color","white")
+                   }
+               },
+               error: function () {
+                   alert("Failed on highligh tmatch");
+               }
+           })
+    }
+
+    function changeOptions(){
+        var datastring = "target_person="+current_selected_person;
+        $.ajax({
+               type: "GET",
+               url: "/changeoptionsonright",
+               data: datastring,
+               success: function (text) {
+                   var re = /'(.*?)'/g;
+                   var res = text.match(re);
+
+                   if(res){
+                      for (i = 0; i < res.length; i++) {
+                       var choice_in_word = res[i].replace(/'/g, "");
+                       document.getElementById(idmap2[i+1]).innerHTML = choice_in_word;
+                      }
+                   }
+               },
+               error: function () {
+                   alert("Failed on highligh tmatch");
+               }
+           })
+    }
+
+    function clearStyles(){
+        $('#roommate_gender_head').css("backgroundColor","transparent").css("color", "#5a5a5a");
+        $('#smokingchoice_head').css("backgroundColor","transparent").css("color", "#5a5a5a");
+        $('#overnight_guest_head').css("backgroundColor","transparent").css("color", "#5a5a5a");
+        $('#study_habits_head').css("backgroundColor","transparent").css("color", "#5a5a5a");
+        $('#sleep_habits_head').css("backgroundColor","transparent").css("color", "#5a5a5a");
+        $('#cleanliness_head').css("backgroundColor","transparent").css("color", "#5a5a5a")
+    }
+
+    function changeRight(elem){
+        //alert(elem.parentElement.id);
+        var select_guy = elem.parentElement.id;
+        current_selected_person = select_guy;
+        changeOptions();
+        highlightmatch();
+    }
+
+
+</script>
 
 </body>
 </html>

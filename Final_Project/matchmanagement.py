@@ -31,6 +31,7 @@ class MainHandler(webapp2.RequestHandler):
             match_usr_info = Person.Person.query(ancestor= management.person_key(str(match_usr))).fetch(1)[0]
             # construct a dict
             info_dict = dict()
+            info_dict['ID'] = match_usr_info.person_account
             info_dict['Name'] = match_usr_info.person_name
             info_dict['Gender'] = match_usr_info.person_gender
             info_dict['Age'] = match_usr_info.person_age
@@ -38,10 +39,26 @@ class MainHandler(webapp2.RequestHandler):
 
             current_matches.append(info_dict)
 
+        # get the 1st match person's information, that is used as the default to show on match page
+        first_person = current_matches_names[0]
+        first_person_info = Person.Person.query(ancestor= management.person_key(str(first_person))).fetch(1)[0]
+
+        # save first person info in a dict
+        first_p_setting = dict()
+
+        first_p_setting['roommategender'] = Person.preferenceMatchEngine("pref1", str(first_person_info.roommate_choice))
+        first_p_setting['smoking_choice'] = Person.preferenceMatchEngine("pref2", str(first_person_info.smoking_choice))
+        first_p_setting['overnight_guest_choice'] = Person.preferenceMatchEngine("pref3", str(first_person_info.overnight_guest_choice))
+        first_p_setting['study_habits_choice'] = Person.preferenceMatchEngine("pref4", str(first_person_info.study_habits_choice))
+        first_p_setting['sleep_habits_choice'] = Person.preferenceMatchEngine("pref5", str(first_person_info.sleep_habits_choice))
+        first_p_setting['cleanliness_choice'] = Person.preferenceMatchEngine("pref6", str(first_person_info.cleanliness_choice))
+
         template_values = {
             'usr': curr_usr,
             'logout_url': logout_url,
             'current_matches': current_matches,
+            'first_person_setting': first_p_setting,
+            'first_person_id': current_matches_names[0],
         }
 
         template = JINJA_ENVIRONMENT.get_template('/myhtml/match_list.html')
