@@ -4,6 +4,7 @@ import webapp2
 import jinja2
 import os
 import Person
+import json
 import management
 
 from google.appengine.api import users
@@ -22,7 +23,7 @@ class MainHandler(webapp2.RequestHandler):
 
         # get the current match list
         usr_ndb_info = Person.Person.query(ancestor= management.person_key(str(curr_usr))).fetch(1)[0]
-        current_matches_names = usr_ndb_info.current_matches
+        current_matches_names = usr_ndb_info.potential_roommate
 
         current_matches = []
 
@@ -40,10 +41,10 @@ class MainHandler(webapp2.RequestHandler):
             current_matches.append(info_dict)
 
         first_p_setting = None
-        first_person_id =None
+        first_person_id = None
 
-        # get the 1st match person's information, that is used as the default to show on match page
         if current_matches_names:
+            # get the 1st match person's information, that is used as the default to show on match page
             first_person = current_matches_names[0]
             first_person_info = Person.Person.query(ancestor= management.person_key(str(first_person))).fetch(1)[0]
 
@@ -59,7 +60,6 @@ class MainHandler(webapp2.RequestHandler):
             first_p_setting['sleep_habits_choice'] = Person.preferenceMatchEngine("pref5", str(first_person_info.sleep_habits_choice))
             first_p_setting['cleanliness_choice'] = Person.preferenceMatchEngine("pref6", str(first_person_info.cleanliness_choice))
 
-
         template_values = {
             'usr': curr_usr,
             'logout_url': logout_url,
@@ -68,9 +68,33 @@ class MainHandler(webapp2.RequestHandler):
             'first_person_id': first_person_id,
         }
 
-        template = JINJA_ENVIRONMENT.get_template('/myhtml/match_list.html')
+        template = JINJA_ENVIRONMENT.get_template('/myhtml/potential_roommate.html')
         self.response.write(template.render(template_values))
 
+
+class DeletePotentialPersons(webapp2.RequestHandler):
+    def post(self):
+        body = self.request.body
+
+        cur_usr = users.get_current_user();
+        cur_usr = str(cur_usr)
+
+        # parse the json
+        j = json.loads(body)
+        potentialpersons = j["potentialPerson"]
+
+        # get the current match list
+        usr_ndb_info = Person.Person.query(ancestor= management.person_key(str(cur_usr))).fetch(1)[0]
+        potential_roommates = usr_ndb_info.potential_roommate
+
+        for person in potentialpersons:
+            potential_roommates.remove(person)
+
+        usr_ndb_info.potential_roommate = potential_roommates
+        usr_ndb_info.put()
+
+
 app = webapp2.WSGIApplication([
-    ('/matchmanagement', MainHandler)
+    ('/potentialroommate_management', MainHandler),
+    ('/deletepotentialpersons', DeletePotentialPersons),
 ], debug=True)

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>My Matches</title>
+    <title>Potential Roommates</title>
     <!-- Bootstrap core CSS -->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
@@ -39,8 +39,8 @@
     </style>
 
 </head>
-<body style="background-image: url(/img/sky-blue.jpg); background-repeat:no-repeat;background-size:cover;">
 
+<body style="background-image: url(/img/latest-blue-vintage.jpg); background-repeat:no-repeat;background-size:cover;">
 <div class="navbar-wrapper">
       <div class="container">
           <nav class="navbar navbar-inverse navbar-static-top">
@@ -82,7 +82,7 @@
                 <td width="50%" style="padding: 20px">
                     <div class="panel panel-default" style="background-color: transparent;">
                     <!-- Default panel contents -->
-                      <div class="panel-heading text-center">People I Match</div>
+                      <div class="panel-heading text-center">My Potential Roommates</div>
                     <div id="table-wrapper2">
                         <div id="table-scroll2">
                          <table class="table">
@@ -115,15 +115,14 @@
                     </div>
                     </div>
 
-                    <button class="btn btn-primary center-block" type="button" id="addchecked">
-                        Add Checked to My Potential List!
+                    <button class="btn btn-danger center-block" type="button" id="deletechecked">
+                        Delete Checked From My Potential List!
                     </button>
                 </td>
 
-
                 <td width="50%" style="padding: 20px">
                     <div class="jumbotron" style="padding-top: 20px; padding-bottom: 10px; margin-top: 0px; margin-bottom: 0px; background-image:url(/img/orangeyellow-background.jpg)">
-                            <h3>You Are Interested In</h3>
+                            <h3>Your Potential Roommate</h3>
                             <p class="lead" id="interestedPersonName">{{first_person_setting['name']}}</p>
                             <p><a class="btn btn-lg btn-success" href="/chatroom" role="button">Let's Chat!</a></p>
                           </div>
@@ -152,15 +151,13 @@
                             </div>
                           </div>
                 </td>
-
             </tr>
         </table>
     </div>
- </div>
+</div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-
 <script>
     var usr = '{{usr}}';
     var current_selected_person = '{{first_person_id}}';
@@ -186,7 +183,7 @@
         //alert("current usr = "+usr+" target person = "+current_selected_person)
         highlightmatch();
 
-        $("#addchecked").click( function(e){
+        $("#deletechecked").click( function(e){
             e.preventDefault();
 
             // record the checked row
@@ -198,19 +195,19 @@
                     }
                 });
 
-            var addPotentialPerson = {
+            var deletePotentialPerson = {
                     potentialPerson : checkedRow
                 }
 
             $.ajax({
                type: 'post',
-               url: "/addpotentialpersons",
-               data: JSON.stringify(addPotentialPerson),
+               url: "/deletepotentialpersons",
+               data: JSON.stringify(deletePotentialPerson),
                success: function (text) {
-                    window.location.replace("/management");
+                    window.location.replace("/potentialroommate_management");
                },
                error: function () {
-                   alert("Failed on add potential list");
+                   alert("Failed to delete potential persons");
                }
            })
 
@@ -278,15 +275,11 @@
     function changeRight(elem){
         //alert(elem.parentElement.id);
         var select_guy = elem.parentElement.id;
-        // change the name shown
         document.getElementById("interestedPersonName").innerHTML = elem.innerHTML
         current_selected_person = select_guy;
         changeOptions();
         highlightmatch();
     }
-
-
 </script>
-
 </body>
 </html>

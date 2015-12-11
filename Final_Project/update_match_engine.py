@@ -2,7 +2,7 @@ __author__ = 'Qingchuan'
 
 import management
 import Person
-import channel_server
+import chat_server
 import update_chattarget_engine
 
 
@@ -22,7 +22,7 @@ def update_match(usr_login):
         usr_personal_info.put()
 
         # send my self notification
-        channel_server.notifiyclient(usr_login)
+        chat_server.notifiyclient(usr_login, "", "", "newmatchnotification")
 
 
 # worst case O(kn) k is the number of matching attributes, n is the number of accounts
@@ -105,7 +105,7 @@ def updateMutualMatches(usr_login):
             usr_i_info.put()
             if usr_i_has_new_noti:
                 print("I will notify him")
-                channel_server.notifiyclient(usr_i_account)
+                chat_server.notifiyclient(usr_i_account, "", "", "newmatchnotification")
 
     # Step5 return number of new matches
     usr_personal_info.put()

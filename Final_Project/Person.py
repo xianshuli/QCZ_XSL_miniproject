@@ -80,6 +80,9 @@ class Person(ndb.Model):
     # person's current match list
     current_matches = ndb.StringProperty(repeated=True)
 
+    # person's potential roommate list
+    potential_roommate = ndb.StringProperty(repeated=True)
+
     # person's chat history
     myChatHistory = ndb.LocalStructuredProperty(PersonIChat, repeated=True)
 

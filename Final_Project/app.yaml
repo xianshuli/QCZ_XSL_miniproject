@@ -1,4 +1,4 @@
-application: perfectroommateversion3
+application: perfectroommateversion4
 version: 1
 runtime: python27
 api_version: 1
@@ -75,8 +75,14 @@ handlers:
 - url: /changeoptionsonright
   script: match_page_helper.app
 
+- url: /potentialroommate_management
+  script: potentialroommate_management.app
+
 - url: /addpotentialpersons
   script: potentialmatch_management.app
+
+- url: /deletepotentialpersons
+  script: potentialroommate_management.app
 
 - url: /popup_about
   script: popuphandler.app

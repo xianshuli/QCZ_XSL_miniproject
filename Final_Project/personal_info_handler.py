@@ -66,6 +66,8 @@ class MainHandler(webapp2.RequestHandler):
             new_usr_info.usr_viewed_updates = False
             new_usr_info.usr_notification = 0
             new_usr_info.myChatHistory = []  # init with empty list
+            new_usr_info.current_matches = []
+            new_usr_info.potential_roommate = []
 
             # ================================================================================
             # hard code the chat history for testing only
