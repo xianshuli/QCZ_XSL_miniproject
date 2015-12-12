@@ -57,6 +57,7 @@
             {% for person in chat_list%}
                 <tr>
                     <td onclick="showChatDialog(this)" id="contactname">{{ person.person_account }}</td>
+                    <td>{{ person.person_name }}</td>
                     <td id="unread_{{ person.person_account}}" style="padding-left: 30px">
                         <img src="/img/mail-message-new.png" style="visibility: hidden"></td>
                 </tr>

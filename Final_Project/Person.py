@@ -48,6 +48,7 @@ preference_dict["pref6"] = pref_cleanliness
 class PersonIChat(ndb.Model):
     # who I chat with and a pointer to the chat history
     person_account = ndb.StringProperty()
+    person_name = ndb.StringProperty()
     chat_history = ndb.JsonProperty(repeated=True)
     new_message_unread = ndb.BooleanProperty()
 

@@ -111,6 +111,7 @@ class NewMessageHandler(webapp2.RequestHandler):
             # create a new chat record
             print("add a new chat record")
             new_chat_record = Person.PersonIChat()
+            new_chat_record.person_name = getAccountName(receiver)
             new_chat_record.person_account = receiver
             new_chat_record.new_message_unread = True
             new_chat_record.chat_history = [message]
@@ -148,6 +149,7 @@ class NewMessageHandler(webapp2.RequestHandler):
             # create a new chat record
             print("add a new chat record")
             new_chat_record = Person.PersonIChat()
+            new_chat_record.person_name = getAccountName(caller)
             new_chat_record.person_account = caller
             new_chat_record.new_message_unread = True
             new_chat_record.chat_history = [message]
@@ -166,6 +168,12 @@ class NewMessageHandler(webapp2.RequestHandler):
         # Note: for now the receiver should in management page to get this notice
         notifiyclient(receiver, caller, chatcontent, "chatroom")
 
+
+def getAccountName(usr_account):
+    usr_personal_info = Person.Person.query(
+            ancestor=management.person_key(usr_account)).fetch(1)[0]
+    print("return person name "+usr_personal_info.person_name)
+    return usr_personal_info.person_name
 
 
 app = webapp2.WSGIApplication([

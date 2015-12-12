@@ -2,6 +2,7 @@ __author__ = 'Qingchuan'
 
 import Person
 import management
+import chat_server
 
 from google.appengine.api import users
 
@@ -24,6 +25,7 @@ def updateMutualMatches(curr_usr, potential_target):
         # create a new PersonIChat
         new_chat_person = Person.PersonIChat()
         new_chat_person.person_account = potential_target
+        new_chat_person.person_name = chat_server.getAccountName(potential_target)
         new_chat_person.new_message_unread = False
         new_chat_person.chat_history = []
 

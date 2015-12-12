@@ -20,8 +20,13 @@ class MainHandler(webapp2.RequestHandler):
         curr_usr = users.get_current_user()
         logout_url = users.create_logout_url('/')
 
-        # get the current match list
         usr_ndb_info = Person.Person.query(ancestor= management.person_key(str(curr_usr))).fetch(1)[0]
+
+        # we suppose the usr will view all the matches, so we set the usr_notification=> 0 and usr_viewed_updates=> True
+        usr_ndb_info.usr_notification = 0
+        usr_ndb_info.usr_viewed_updates = True
+
+        # get the current match list
         current_matches_names = usr_ndb_info.current_matches
 
         current_matches = []
@@ -67,6 +72,8 @@ class MainHandler(webapp2.RequestHandler):
             'first_person_setting': first_p_setting,
             'first_person_id': first_person_id,
         }
+
+        usr_ndb_info.put()
 
         template = JINJA_ENVIRONMENT.get_template('/myhtml/match_list.html')
         self.response.write(template.render(template_values))

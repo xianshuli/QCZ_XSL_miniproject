@@ -34,17 +34,23 @@ def updateMutualMatches(usr_login):
     usr_personal_info = Person.Person.query(
             ancestor=management.person_key(usr_login)).fetch(1)[0]
     usr_current_matches = usr_personal_info.current_matches
-    usr_school = usr_personal_info.person_school
-    print("Usr_school is "+usr_school)
+    #usr_school = usr_personal_info.person_school
+    #print("Usr_school is "+usr_school)
 
     # Step2 go over current match list, remove unmatched items according to some threshold setting
     for usr_i in usr_current_matches:
         usr_i_info =  Person.Person.query(
             ancestor=management.person_key(usr_i)).fetch(1)[0]
-        usr_i_school = usr_i_info.person_school
-        print("Usr_i_school= "+usr_i_school+" Usr_school = "+usr_school)
+        #usr_i_school = usr_i_info.person_school
+        #print("Usr_i_school= "+usr_i_school+" Usr_school = "+usr_school)
+
+        if deleteYou(usr_login, usr_i):
+            usr_current_matches.remove(usr_i)
+
+        '''
         if usr_i_school != usr_school:
             usr_current_matches.remove(usr_i)
+        '''
 
     # Step3 go over the database to add any new matches to the list
     all_usrs = Person.Person.query().fetch()
@@ -58,8 +64,9 @@ def updateMutualMatches(usr_login):
             if not in_list_already:
                 usr_i_info = Person.Person.query(
                     ancestor=management.person_key(usr_i_account)).fetch(1)[0]
-                usr_i_school = usr_i_info.person_school
-                if usr_i_school == usr_school:
+                #usr_i_school = usr_i_info.person_school
+                #if usr_i_school == usr_school:
+                if doWeMatch(usr_i_account, str(usr_login)):
                     print("Going to append "+usr_i_account+" to "+(str(usr_login)))
                     usr_current_matches.append(usr_i_account)
 
@@ -73,7 +80,7 @@ def updateMutualMatches(usr_login):
     all_usrs = Person.Person.query().fetch()
     for usr_i in all_usrs:
         usr_i_account = usr_i.person_account
-        print(str(usr_i_account) == str(usr_login))
+        #print(str(usr_i_account) == str(usr_login))
         if str(usr_i_account) != str(usr_login):
             usr_i_has_new_noti = False
             we_match_and_i_dont_have_you = doWeMatch(usr_i_account, str(usr_login))
@@ -132,7 +139,11 @@ def doWeMatch(usr_i_account, usr_login):
         if in_list == usr_login:
             return False
 
+    '''
     if usr_i_info.person_school == usr_info.person_school:
+        return True
+    '''
+    if usr_i_info.person_age == usr_info.person_age:
         return True
 
     return False
@@ -150,6 +161,6 @@ def deleteYou(usr_i_account, usr_login):
     for in_list in usr_i_match_list:
         if in_list == usr_login:
             # I am in his old list and now no longer qualified
-            if usr_i_info.person_school != usr_info.person_school:
+            if usr_i_info.person_age != usr_info.person_age:
                 return True
     return False
