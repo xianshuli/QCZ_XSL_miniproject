@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Management</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/img/logo.jpg" />`
     <!-- Bootstrap core CSS -->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
@@ -347,6 +348,17 @@
       </a>
     </div><!-- /.carousel -->
 
+<!-- Footer -->
+        <footer>
+            <div class="row">
+                <div class="col-lg-12">
+                    <p align="center">Copyright &copy; PerfectRoomMate-PRM-2015-12-14</p>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+        </footer>
+
 
 <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -494,7 +506,7 @@
                     url = "/popup_help";
                     break;
                 case 3:
-                    url = "/popup_report_issue";
+                    url = "/popup_report_issue?usr="+usr;
                     break;
             }
             LeftPosition = (screen.width) ? (screen.width-w)/2 : 0;

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Chat Room</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/img/logo.jpg" />`
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/carousel.css" rel="stylesheet">
     <link href="/css/chatbox.css" rel="stylesheet" >
@@ -47,17 +48,18 @@
 
       <div style="position: relative">
 
-        <table style="float: left; width: 50%;">
+        <table class="table" style="float: left; width: 50%;">
             <thead>
             <tr>
-                <th>Person</th>
+                <th width="50%"><div class="panel-heading text-center center-block">Person Account</div></th>
+                <th width="50%"><div class="panel-heading text-center center-block">Person Name</div></th>
             </tr>
             </thead>
             <tbody id="contactList">
             {% for person in chat_list%}
-                <tr>
+                <tr class="info" style="margin-top: 5px">
                     <td onclick="showChatDialog(this)" id="contactname">{{ person.person_account }}</td>
-                    <td>{{ person.person_name }}</td>
+                    <td class="text-center">{{ person.person_name }}</td>
                     <td id="unread_{{ person.person_account}}" style="padding-left: 30px">
                         <img src="/img/mail-message-new.png" style="visibility: hidden"></td>
                 </tr>

@@ -24,8 +24,14 @@ class HelpHandler(webapp2.RequestHandler):
 
 class ReportIssueHandler(webapp2.RequestHandler):
     def get(self):
+        usr = self.request.get('usr')
+        #print(usr+" wants to report an issue")
+
+        template_values = {
+            'usr': usr,
+        }
         template = JINJA_ENVIRONMENT.get_template('/myhtml/popup_report_issue.html')
-        self.response.write(template.render())
+        self.response.write(template.render(template_values))
 
 
 app = webapp2.WSGIApplication([

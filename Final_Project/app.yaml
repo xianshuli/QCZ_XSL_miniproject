@@ -93,6 +93,9 @@ handlers:
 - url: /popup_report_issue
   script: popuphandler.app
 
+- url: /send_usr_report_issue
+  script: email_engine.app
+
 - url: /
   script: main.app
 

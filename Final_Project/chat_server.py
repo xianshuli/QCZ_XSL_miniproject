@@ -98,7 +98,7 @@ class NewMessageHandler(webapp2.RequestHandler):
             # not a new receiver
             if chat_person == receiver:
                 new_receiver = False
-                chat_record.new_message_unread = True
+                chat_record.new_message_unread = False
                 # append the message
                 print("add to a existing chat record")
                 if chat_record.chat_history:
@@ -113,7 +113,7 @@ class NewMessageHandler(webapp2.RequestHandler):
             new_chat_record = Person.PersonIChat()
             new_chat_record.person_name = getAccountName(receiver)
             new_chat_record.person_account = receiver
-            new_chat_record.new_message_unread = True
+            new_chat_record.new_message_unread = False
             new_chat_record.chat_history = [message]
             # add this record
             if usr_personal_info.myChatHistory:

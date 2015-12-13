@@ -5,6 +5,7 @@ import Person
 import chat_server
 import update_chattarget_engine
 
+matchThreshold = 3;
 
 def update_match(usr_login):
 
@@ -125,7 +126,7 @@ def find_in_list(usr_current_matches, usr_i_account):
             return True
     return False
 
-
+'''
 def doWeMatch(usr_i_account, usr_login):
     usr_i_info = Person.Person.query(
                     ancestor=management.person_key(usr_i_account)).fetch(1)[0]
@@ -139,10 +140,6 @@ def doWeMatch(usr_i_account, usr_login):
         if in_list == usr_login:
             return False
 
-    '''
-    if usr_i_info.person_school == usr_info.person_school:
-        return True
-    '''
     if usr_i_info.person_age == usr_info.person_age:
         return True
 
@@ -163,4 +160,89 @@ def deleteYou(usr_i_account, usr_login):
             # I am in his old list and now no longer qualified
             if usr_i_info.person_age != usr_info.person_age:
                 return True
+    return False
+    '''
+
+def doWeMatch(usr_i_account, usr_login):
+
+    usr_i_info = Person.Person.query(
+                    ancestor=management.person_key(usr_i_account)).fetch(1)[0]
+
+    usr_info = Person.Person.query(
+                    ancestor=management.person_key(usr_login)).fetch(1)[0]
+
+    usr_i_match_list = usr_i_info.current_matches
+
+    for in_list in usr_i_match_list:
+        if in_list == usr_login:
+            return False
+
+    '''
+    if usr_i_info.person_school == usr_info.person_school:
+        return True
+    '''
+    # if usr_i_info.person_age == usr_info.person_age:
+    #     return True
+    matchScore = 0
+    if usr_i_info.person_school == usr_info.person_school:
+        if usr_i_info.roommate_choice == usr_info.roommate_choice:
+            matchScore += 1
+        if usr_i_info.smoking_choice == usr_info.smoking_choice:
+            matchScore += 1
+        if usr_i_info.overnight_guest_choice == usr_info.overnight_guest_choice:
+            matchScore += 1
+        if usr_i_info.study_habits_choice == usr_info.study_habits_choice:
+            matchScore += 1
+        if usr_i_info.sleep_habits_choice == usr_info.sleep_habits_choice:
+            matchScore += 1
+        if usr_i_info.musictv_choice == usr_info.musictv_choice:
+            matchScore += 1
+        if usr_i_info.cleanliness_choice == usr_info.cleanliness_choice:
+            matchScore += 1
+        print "match score = ",matchScore
+        if matchScore >= matchThreshold:
+            print('meet matchThreshold')
+            return True
+
+    # if usr_i_info.person_school == usr_info.person_school:
+    #     return True
+
+    return False
+
+
+def deleteYou(usr_i_account, usr_login):
+    usr_i_info = Person.Person.query(
+                    ancestor=management.person_key(usr_i_account)).fetch(1)[0]
+
+    usr_info = Person.Person.query(
+                    ancestor=management.person_key(usr_login)).fetch(1)[0]
+
+    usr_i_match_list = usr_i_info.current_matches
+
+    matchScore = 0
+    for in_list in usr_i_match_list:
+        if in_list == usr_login:
+            # I am in his old list and now no longer qualified
+            if usr_i_info.person_school != usr_info.person_school:
+                print('not the same shcool anymore')
+                return True
+            else:
+                if usr_i_info.roommate_choice == usr_info.roommate_choice:
+                    matchScore += 1
+                if usr_i_info.smoking_choice == usr_info.smoking_choice:
+                    matchScore += 1
+                if usr_i_info.overnight_guest_choice == usr_info.overnight_guest_choice:
+                    matchScore += 1
+                if usr_i_info.study_habits_choice == usr_info.study_habits_choice:
+                    matchScore += 1
+                if usr_i_info.sleep_habits_choice == usr_info.sleep_habits_choice:
+                    matchScore += 1
+                if usr_i_info.musictv_choice == usr_info.musictv_choice:
+                    matchScore += 1
+                if usr_i_info.cleanliness_choice == usr_info.cleanliness_choice:
+                    matchScore += 1
+                print "match score = ",matchScore
+                if matchScore < matchThreshold:
+                    print('remove from matchlist')
+                    return True
     return False

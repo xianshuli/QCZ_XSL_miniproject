@@ -3,8 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <title>Report Issues</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/img/logo.jpg" />
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 </head>
-<body>
-<h2>Report Issue</h2>
+
+<body style="background-image: url(/img/sky-blue.jpg); background-repeat:no-repeat;background-size:300px 400px;">
+<h2 align="center">Report Issue</h2>
+<form role="form" style="padding: 10px" id="issueForm">
+    <div class="form-group">
+      <label for="comment">Comment:</label>
+      <textarea class="form-control" rows="10" id="comment"></textarea>
+      <input class="btn btn-primary center-block" type="submit" value="Submit" style="margin-top: 10px">
+    </div>
+</form>
 </body>
+
+<script>
+
+    var usr = '{{usr}}';
+
+    jQuery(document).ready( function($) {
+        $("#issueForm").submit( function(e){
+                e.preventDefault();
+                var text = $("#comment").val();
+                var dataString = "usr_issue="+text+"&usr_account="+usr;
+                alert(usr+" wants to report an issue");
+
+                // send to email engine
+                $.ajax({
+                    type: "POST",
+                    url: "/send_usr_report_issue",
+                    data: dataString,
+                    success: function() {},
+                    error: function(){}
+                  });
+
+                window.close()
+        });
+    });
+
+</script>
 </html>

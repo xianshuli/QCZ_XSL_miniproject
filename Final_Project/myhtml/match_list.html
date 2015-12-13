@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>My Matches</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/img/logo.jpg" />`
     <!-- Bootstrap core CSS -->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="/css/carousel.css" rel="stylesheet">
     <link href="/css/jumbotron-narrow.css" rel="stylesheet">
-    <script src="/js/bootstrap.min.js"></script>
 
     <style>
         #table-wrapper2 {
@@ -160,6 +160,7 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
 
 <script>
     var usr = '{{usr}}';
@@ -285,6 +286,26 @@
         highlightmatch();
     }
 
+    function centeredPopup(url_num){
+            var w = 300;
+            var h = 400;
+            switch(url_num){
+                case 1:
+                    url = "/popup_about";
+                    break;
+                case 2:
+                    url = "/popup_help";
+                    break;
+                case 3:
+                    url = "/popup_report_issue";
+                    break;
+            }
+            LeftPosition = (screen.width) ? (screen.width-w)/2 : 0;
+            TopPosition = (screen.height) ? (screen.height-h)/2 : 0;
+            settings =
+            'height='+h+',width='+w+',top='+TopPosition+',left='+LeftPosition+',scrollbars=yes,resizable'
+            popupWindow = window.open(url,'popUpWindow',settings)
+        }
 
 </script>
 
