@@ -38,7 +38,7 @@
     </script>
 
 
-    <script>
+    <script type="text/javascript">
         $(function () {
             var cache = {};
             $("#SearchInput").autocomplete({
@@ -55,11 +55,23 @@
                             response(data);
                         }
                     });
-//                    $.getJSON("/keyStore", request, function (data, status, xhr) {
-//                        response(data);
-//                    });
                 }
             });
+        });
+    </script>
+    <script type="text/javascript">
+        var data = {
+            resource_id: '38625c3d-5388-4c16-a30f-d105432553a4', // the resource id
+            limit: 5, // get 5 results
+            q: 'jones' // query for 'jones'
+        };
+        $.ajax({
+            url: 'https://inventory.data.gov/api/action/datastore_search',
+            data: data,
+            dataType: 'jsonp',
+            success: function (data) {
+                alert('Total results found: ' + data.result.total)
+            }
         });
     </script>
 </head>
