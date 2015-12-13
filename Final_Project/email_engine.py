@@ -12,7 +12,7 @@ class EmailUsrIssues(webapp2.RequestHandler):
         usr_account = self.request.get('usr_account')
         print(usr_issue)
 
-        mail.send_mail(sender=usr_account, to="<zqc@utexas.edu>", subject="Usr Reported Issue", body=usr_issue)
+        mail.send_mail(sender=usr_account, to="<lixianshu1992@gmail.com>", subject="Usr Reported Issue", body=usr_issue)
 
         self.response.write("Success")
 
